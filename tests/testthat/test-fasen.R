@@ -1,4 +1,3 @@
-context("Fasen regression")
 
 test_that("fasen__shape", {
   n <- 10000
