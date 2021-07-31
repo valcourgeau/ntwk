@@ -1,15 +1,14 @@
 Package: ntwk
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Statistical Inference For Network Time Series
+Version: 0.0.1
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Valentin",
+           family = "Courgeau",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "val.courgeau@gmail.com",
+           comment = c(ORCID = "0000-0002-7423-0090"))
 Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT License (LICENSE)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
