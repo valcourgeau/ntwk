@@ -2,8 +2,12 @@
 
 export(ConstructPath)
 export(CorrelatedBrownianNoise)
+export(FitBrownianMotionCompoundPoisson)
+export(FitGhypDiffusion)
 export(GrouMLE)
+export(LevyRecovery)
 export(NodeMLE)
+importFrom(stats,optim)
 importFrom(stats,rnorm)
 importFrom(stats,runif)
 importFrom(stats,sd)
