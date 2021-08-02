@@ -45,6 +45,7 @@ test_that("utils_AugmentedDiag__shape_values", {
       aug_diag <- AugmentedDiag(d = d, offset = i)
       testthat::expect_equal(dim(aug_diag), c(d, d))
       testthat::expect_equal(sum(abs(aug_diag)), d-i)
+      testthat::expect_true(all(aug_diag[aug_diag!=0] == 1))
     }else{
       testthat::expect_error(AugmentedDiag(d = d, offset = i))
     }

@@ -1,4 +1,8 @@
 
+#' @param nw_topo Graph topology or adjacency matrix.
+#' @param noise Noise increments to apply.
+#' @param y_init Start value.
+#' @param delta_time Time step.
 #' @example ConstructPath(diag(10), matrix(rnorm(100*10,0,1), ncol=10), 10, 0.01)
 #' @export
 ConstructPath <- function(nw_topo, noise, y_init, delta_time){
