@@ -11,4 +11,3 @@ test_that("fasen__shape", {
   fasen_reg <- ntwk::FasenRegression(data)
   testthat::expect_equal(dim(fasen_reg), c(d, d))
 })
-
