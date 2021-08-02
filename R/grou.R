@@ -1,9 +1,11 @@
-Rcpp::cppFunction(depends = "RcppArmadillo", code = 'arma::mat mat_inv(const arma::mat &Am) {return inv(Am);}')
+# Rcpp::cppFunction(depends = "RcppArmadillo", code = 'arma::mat mat_inv(const arma::mat &Am) {return inv(Am);}')
 
 #' Computes the psi-GrOU MLE of a batch of data
 #' @param times Times at which data is given
 #' @param data Values to compute the MLE with.
+#' @param output Output type: either "vector"or "matrix".
 #' @return the psi-GrOU (node-wise) MLE
+#' @importFrom stats rnorm runif sd stl ts
 #' @examples
 #' n <- 1000
 #' d <- 10
@@ -46,14 +48,6 @@ NodeMLE <- function(times, data, output="vector"){
 #' @param data Values to compute the MLE with.
 #' @param thresholds Jump threshold values. Default is `NA` (no filtering).
 #' @return A list of two matrices (numerator and denominator).
-#' @examples
-#' n <- 1000
-#' d <- 10
-#' times <- seq(n)
-#' delta_time <- 0.01
-#' noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol=d)
-#' data <- ConstructPath(diag(d), noise=noise, y_init=rep(0, d), delta_time=delta_time)
-#' CoreNodeMLE(times, data)
 CoreNodeMLE <- function(times, data, thresholds=NA){
   n_nodes <- ncol(data)
   n_data <- nrow(data)
@@ -88,15 +82,15 @@ NodeMLELong <- function(times, data, thresholds, div=1e5, output="vector"){
   n_nodes <- ncol(data)
   n_data <- nrow(data)
 
-  idx <- (0:(n_data %/% div)) * div
-  if(tail(idx, n=1) != n_data){ # check if last elem is in
-    idx <- c(idx, n_data)
+  if(div < n_data){
+    idx <- seq(1, n_data+div, by=div)
+  }else{
+    idx <- c(1, n_data+1)
   }
-  idx <- idx[which(idx < n_data)]
   collection_num_denom <- lapply(
     1:(length(idx)-1),
     FUN = function(i){
-      idx_couple <- idx[i]:idx[i+1]
+      idx_couple <- idx[i]:(idx[i+1]-1)
       CoreNodeMLE(times = times[idx_couple], data = data[idx_couple,], thresholds = thresholds)
     }
   )
@@ -125,7 +119,9 @@ NodeMLELong <- function(times, data, thresholds, div=1e5, output="vector"){
 #' @param data Values to compute the MLE with.
 #' @param adj Adjacency matrix of the underlying network.
 #' @param thresholds Jump threshold values.
-#' @param div
+#' @param div Batch size/divisor to avoid large memory allocation.
+#' @param mode GrOU mode: either "node" (psi-GrOU) or "network" (theta-GrOU).
+#' @param output Output type: either "vector"or "matrix".
 #' @return The GrOU MLE in matrix or vector form in its theta or psi parametrisation.
 #' @examples
 #' n <- 1000
@@ -134,7 +130,7 @@ NodeMLELong <- function(times, data, thresholds, div=1e5, output="vector"){
 #' delta_time <- 0.01
 #' noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol=d)
 #' data <- ConstructPath(diag(d), noise=noise, y_init=rep(0, d), delta_time=delta_time)
-#' NodeMLE(times, data)
+#' GrouMLE(times, data, adj=diag(d), div=1e2)
 #' @export
 GrouMLE <- function(times, data, adj=NA, thresholds=NA, div = 1e3, mode = "node", output = "vector"){
   assertthat::assert_that(
@@ -184,36 +180,29 @@ GrouMLE <- function(times, data, adj=NA, thresholds=NA, div = 1e3, mode = "node"
   }
 }
 
-FasenRegression <- function(data){
-  data <- as.matrix(data)
-  data_without_first <- data[-1,]
-  data_without_last <- data[-nrow(data),]
-  sub <- t(data_without_last) %*% data_without_last
-  return(t(data_without_first) %*% data_without_last %*% solve(sub))
-}
-
-n_nodes <- 50
-n_sample <- 50000
-set.seed(42)
-adj_test <- diag(n_nodes)
-adj_test[2,1] <- 0.5
-
-mesh_size <- 0.01
-sample_path <- ConstructPath(adj_test, matrix(rnorm(n_sample*n_nodes, 0, 1*mesh_size^(1/2)), ncol=n_nodes), rep(0, n_nodes), mesh_size)
-GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="node", output = "matrix")
-adj_test
-GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "vector")
-GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "matrix")
-
-adj_test <- diag(n_nodes)
-adj_test[2,1] <- 0.4
-adj_test[1,2] <- 0.2
-adj_test[1,3] <- 0.2
-
-mesh_size <- 0.01
-adj_test
-sample_path <- ConstructPath(adj_test, matrix(rnorm(n_sample*n_nodes, 0, 1*mesh_size^(1/2)), ncol=n_nodes), rep(0, n_nodes), mesh_size)
-GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="node", output = "matrix")
-GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "vector")
-
-
+#
+# n_nodes <- 50
+# n_sample <- 50000
+# set.seed(42)
+# adj_test <- diag(n_nodes)
+# adj_test[2,1] <- 0.5
+#
+# mesh_size <- 0.01
+# sample_path <- ConstructPath(adj_test, matrix(rnorm(n_sample*n_nodes, 0, 1*mesh_size^(1/2)), ncol=n_nodes), rep(0, n_nodes), mesh_size)
+# GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="node", output = "matrix")
+# adj_test
+# GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "vector")
+# GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "matrix")
+#
+# adj_test <- diag(n_nodes)
+# adj_test[2,1] <- 0.4
+# adj_test[1,2] <- 0.2
+# adj_test[1,3] <- 0.2
+#
+# mesh_size <- 0.01
+# adj_test
+# sample_path <- ConstructPath(adj_test, matrix(rnorm(n_sample*n_nodes, 0, 1*mesh_size^(1/2)), ncol=n_nodes), rep(0, n_nodes), mesh_size)
+# GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="node", output = "matrix")
+# GrouMLE(times=seq(0, by=mesh_size, length.out = n_sample), data=sample_path, adj = adj_test, div = 1e3, mode="network", output = "vector")
+#
+#

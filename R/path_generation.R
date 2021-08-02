@@ -1,4 +1,7 @@
 
+#' Generates a single Graph Ornstein-Uhlenbeck path with the given
+#' network topology (`nw_topo`), noise increments (`noise`), initial values (`y_init`)
+#' and unique time difference (`delta_time`).
 #' @param nw_topo Graph topology or adjacency matrix.
 #' @param noise Noise increments to apply.
 #' @param y_init Start value.
@@ -21,7 +24,7 @@ ConstructPath <- function(nw_topo, noise, y_init, delta_time){
   return(d_y)
 }
 
-#' Generates multi-dimensionao correlated Brownian motion increments
+#' Generates multi-dimensional correlated Brownian motion increments
 #' @param sigma_matrix Correlation/Covariance matrix
 #' @param n Sample length
 #' @param delta_time Time difference between steps
@@ -30,7 +33,8 @@ ConstructPath <- function(nw_topo, noise, y_init, delta_time){
 #' corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
 #' n <- 1000
 #' delta_time <- 0.01
-#' CorrelatedBrownianNoise(sigma_matrix = , n = n, delta_time = delta_time)
+#' CorrelatedBrownianNoise(sigma_matrix = corr_mat, n = n, delta_time = delta_time)
+#' @export
 CorrelatedBrownianNoise <- function(sigma_matrix, n, delta_time){
   n_nodes <- ncol(sigma_matrix)
   assertthat::assert_that(n_nodes > 1)
