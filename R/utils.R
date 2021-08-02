@@ -22,6 +22,14 @@ ConcatenateCol <- function(col_vec, n){
   return(matrix(rep(col_vec, n), ncol = n))
 }
 
+#' @param data Data to clean.
+#' @param frequency Time series frequency of observations
+#' @param s.window Seasonal window.
+#' @param t.window Trend window.
+#' @param ... additional inputs given to stats::stl
+#' @return List with the cleaned time series, the remainders of the cleaning and their standard deviations.
+#' @importFrom stats stl
+#' @export
 CleanData <- function(data, frequency=24, s.window=24, t.window=24, ...){
   stl_cleaned <- lapply(1:ncol(data),
                         FUN = function(i){
