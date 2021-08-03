@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![codecov](https://codecov.io/gh/valcourgeau/ntwk/branch/main/graph/badge.svg?token=4MEZZBRBML)](https://codecov.io/gh/valcourgeau/ntwk)
+[![R-CMD-check](https://github.com/valcourgeau/ntwk/workflows/R-CMD-check/badge.svg)](https://github.com/valcourgeau/ntwk/actions)
 <!-- badges: end -->
 
 The goal of ntwk is to provide functions for the statistical modelling
@@ -13,18 +14,19 @@ of network time series.
 
 ## Installation
 
-You can install the released version of ntwk from
+*SOON* You can install the released version of ntwk from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 # install.packages("ntwk")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+And the development version from
+[GitHub](https://github.com/valcourgeau/ntwk) with:
 
 ``` r
 # install.packages("devtools")
-# devtools::install_github("valcourgeau/ntwk")
+devtools::install_github("valcourgeau/ntwk")
 ```
 
 ## Example
