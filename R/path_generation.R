@@ -30,7 +30,7 @@ construct_path <- function(nw_topo, noise, y_init, delta_time) {
   return(d_y)
 }
 
-#' Generates multi-dimensional correlated Brownian motion increments
+#' Generates multidimensional correlated Brownian motion increments
 #' @param sigma_matrix Correlation/Covariance matrix
 #' @param n Sample length
 #' @param delta_time Time difference between steps
@@ -63,13 +63,16 @@ compound_poisson_jumps <- function(d, n, delta_time, jump_values) {
   } else {
     n_jumps <- nrow(jump_values)
   }
-  if (n < n_jumps) warning("n < n_jumps in compound_poisson_jumps")
+  if (n < n_jumps) {
+    warning("`n` < `n_jumps` in compound_poisson_jumps:
+            only `n` steps will be created.")
+  }
   results <- matrix(0, nrow = n, ncol = d)
   assertthat::are_equal(d, ncol(jump_values))
 
   horizon <- n * delta_time
-  jump_times <- lapply(1:d, function(x) {
-    sort(runif(min = 0, max = horizon, n = n_jumps))
+  jump_times <- lapply(seq_len(d), function(x) {
+    sort(runif(min = 0, max = horizon, n = min(n, n_jumps)))
   })
   time_grid <- seq(0, to = delta_time * n, by = delta_time)
   idx_jump_injection <- lapply(
