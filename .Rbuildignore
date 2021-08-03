@@ -1,3 +1,4 @@
 ^ntwk\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
+^\.pre-commit-config\.yaml$
