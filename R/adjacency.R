@@ -37,10 +37,10 @@ isolated_network <- function(d, theta_1, theta_2) {
 polymer_network <- function(d, theta_1, theta_2, directed = F) {
   check_thetas(theta_1, theta_2)
   # theta_2 is the diagonal element
-  mat_temp <- AugmentedDiag(d = d, offset = 1) + if (directed) {
-    -AugmentedDiag(d = d, offset = 1)
+  mat_temp <- augmented_diag(d = d, offset = 1) + if (directed) {
+    -augmented_diag(d = d, offset = 1)
   } else {
-    AugmentedDiag(d = d, offset = -1)
+    augmented_diag(d = d, offset = -1)
   }
   mat_temp <- theta_1 * mat_temp / rowSums(abs(mat_temp))
   return(mat_temp + isolated_network(d = d, theta_2 = theta_2))
@@ -74,7 +74,7 @@ lattice_network <- function(d, theta_1, theta_2, directed = F) {
     net_matrix <- cbind(net_matrix, net_mat_tmp)
   }
 
-  net_matrix <- theta_1 * RowNormalised(net_matrix)
+  net_matrix <- theta_1 * row_normalised(net_matrix)
   diag(net_matrix) <- theta_2
 
   return(net_matrix)
@@ -90,7 +90,7 @@ lattice_network <- function(d, theta_1, theta_2, directed = F) {
 #' @export
 fully_connected_network <- function(d, theta_1, theta_2, directed = F) {
   net_temp <- matrix(1, d, d)
-  net_temp <- theta_1 * RowNormalised(net_temp)
+  net_temp <- theta_1 * row_normalised(net_temp)
 
   if (directed) {
     net_temp[lower.tri(net_temp)] <- -net_temp[lower.tri(net_temp)]

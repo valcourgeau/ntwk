@@ -8,6 +8,6 @@ test_that("fasen__shape", {
     nrow = n,
     ncol = d
   )
-  fasen_reg <- FasenRegression(data)
+  fasen_reg <- fasen_regression(data)
   testthat::expect_equal(dim(fasen_reg), c(d, d))
 })

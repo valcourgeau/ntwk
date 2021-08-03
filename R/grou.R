@@ -161,7 +161,7 @@ grou_mle <- function(times, data, adj = NA, thresholds = NA,
   }
 
   n_nodes <- ncol(adj)
-  adj_normalised <- RowNormalised(adj)
+  adj_normalised <- row_normalised(adj)
   diag(adj_normalised) <- 0.0 # to be sure
 
   node_mle <- node_mle_long(
