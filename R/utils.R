@@ -22,6 +22,7 @@ ConcatenateCol <- function(col_vec, n){
   return(matrix(rep(col_vec, n), ncol = n))
 }
 
+#' Clean data using STL / Loess function.
 #' @param data Data to clean.
 #' @param frequency Time series frequency of observations
 #' @param s.window Seasonal window.
@@ -49,6 +50,7 @@ CleanData <- function(data, frequency=24, s.window=24, t.window=24, ...){
 #' @param offset Offset from the diagonal
 #' @return A matrix with an offset diagonal of ones.
 #' @example AugmentedDiag(10, 1) # zeroes everywhere except 1s on the +1 diag
+#' @export
 AugmentedDiag <- function(d, offset){
   assertthat::assert_that(d > offset)
 

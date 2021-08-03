@@ -23,7 +23,8 @@ Imports:
     assertthat (>= 0.2.1),
     ghyp (>= 1.6.1),
     zoo (>= 1.8.9),
-    pracma (>= 2.3.3)
+    pracma (>= 2.3.3),
+    copCAR
 Suggests: 
     testthat (>= 3.0.0),
     stats
