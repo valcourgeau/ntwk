@@ -32,8 +32,8 @@ test_that("correlated_brownian_noise__shape", {
   delta_time <- 0.001
   n_jumps <- 1000
   jump_vals <- matrix(
-    rep(rnorm(n_jumps, 0, sd = 0.1), n_jumps * 3),
-    nrow = n_jumps, ncol = 3
+    rep(rnorm(n_jumps, 0, sd = 0.1), d),
+    nrow = n_jumps, ncol = d
   )
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time, jump_values = jump_vals
@@ -48,8 +48,8 @@ test_that("bm_compound_poisson__shape", {
   delta_time <- 0.001
   n_jumps <- 1000
   jump_vals <- matrix(
-    rep(rnorm(n_jumps, 0, sd = 0.1), n_jumps * 3),
-    nrow = n_jumps, ncol = 3
+    rep(rnorm(n_jumps, 0, sd = 0.1), d),
+    nrow = n_jumps, ncol = d
   )
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time, jump_values = jump_vals
