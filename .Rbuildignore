@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^\.github$
 ^\.pre-commit-config\.yaml$
+^README\.Rmd$
