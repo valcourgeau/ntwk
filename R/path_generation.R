@@ -60,6 +60,7 @@ correlated_brownian_noise <- function(sigma_matrix, n, delta_time) {
 compound_poisson_jumps <- function(d, n, delta_time, jump_values) {
   if (d == 1) {
     n_jumps <- length(jump_values)
+    jump_values <- as.matrix(jump_values)
   } else {
     n_jumps <- nrow(jump_values)
   }
@@ -68,32 +69,43 @@ compound_poisson_jumps <- function(d, n, delta_time, jump_values) {
             only `n` steps will be created.")
   }
   results <- matrix(0, nrow = n, ncol = d)
-  assertthat::are_equal(d, ncol(jump_values))
-
+  assertthat::are_equal(ncol(jump_values), d)
   horizon <- n * delta_time
-  jump_times <- lapply(seq_len(d), function(x) {
-    sort(runif(min = 0, max = horizon, n = min(n, n_jumps)))
+  jump_times_collection <- lapply(seq_len(d), function(x) {
+    jump_times_tmp <- runif(min = 0, max = horizon, n = min(n, n_jumps))
+    return(sort(jump_times_tmp))
   })
   time_grid <- seq(0, to = delta_time * n, by = delta_time)
+
   idx_jump_injection <- lapply(
-    jump_times,
+    jump_times_collection,
     function(times) {
-      vapply(times,
+      vapply(
+        X = times,
         FUN = function(jump_time) {
           pmin(which.max(jump_time < time_grid), n)
-        }, 3
+        },
+        FUN.VALUE = 3
       )
     }
   )
+  assertthat::are_equal(length(idx_jump_injection), d)
 
-  for (i in seq_len(length(idx_jump_injection))) {
+  for (i in seq_len(d)) {
     jump_value_idx <- 1
     for (idx in idx_jump_injection[[i]]) {
       results[idx, i] <- results[idx, i] + jump_values[jump_value_idx, i]
       jump_value_idx <- jump_value_idx + 1
     }
   }
-  return(list(noise = results, jump_times = do.call(cbind, jump_times)))
+  assertthat::are_equal(dim(results), c(n, d))
+
+  return(
+    list(
+      noise = results,
+      jump_times = do.call(cbind, jump_times_collection)
+    )
+  )
 }
 
 correlated_jumps <- function(n, sigma) {

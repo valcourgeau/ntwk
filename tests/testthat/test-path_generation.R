@@ -82,12 +82,12 @@ test_that("correlated_brownian_noise__n_jumps_higher", {
   testthat::expect_equal(dim(cmpnd_poisson$jump_times), c(n, d))
 })
 
-test_that("correlated_brownian_noise__unidimensional", {
+test_that("compound_poisson_jumps__unidimensional", {
   set.seed(42)
-  n <- 1000
+  n <- 10
   d <- 1
   delta_time <- 0.001
-  n_jumps <- 500
+  n_jumps <- 5
   jump_vals <- rnorm(n_jumps, 0, sd = 0.1)
 
   cmpnd_poisson <- compound_poisson_jumps(
@@ -95,7 +95,7 @@ test_that("correlated_brownian_noise__unidimensional", {
   )
 
   testthat::expect_equal(dim(cmpnd_poisson$noise), c(n, d))
-  testthat::expect_equal(dim(cmpnd_poisson$jump_times), c(n, d))
+  testthat::expect_equal(dim(cmpnd_poisson$jump_times), c(n_jumps, d))
 })
 
 test_that("addition_bm_and_compound_poisson__shape", {
