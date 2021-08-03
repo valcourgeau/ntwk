@@ -1,7 +1,7 @@
 #' Fasen's multivariate OU least squares regression
-#' \url{https://doi.org/10.1016/j.jeconom.2012.08.019}
+#' \url{https://doi.org/10.1016/j.jeconom.2012.08.019}.
 #' @param data Multivariate ata to perform the estimation on.
-#' @return A \code{(d, d)} least squares matrix.
+#' @return A \code{(d, d)} least square matrix.
 #' @examples
 #' n <- 100
 #' d <- 10
