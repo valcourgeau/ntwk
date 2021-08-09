@@ -129,7 +129,7 @@ test_that("correlated_jumps__shape", {
   delta_time <- 0.001
   n_jumps <- 1000
   corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
-  corr_jumps <- correlated_jumps(n, corr_mat)
+  corr_jumps <- correlated_jumps(n, corr_mat, delta_time)
 
   testthat::expect_equal(dim(corr_jumps), c(n, d))
 })
@@ -141,7 +141,7 @@ test_that("bm_compound_poisson__shape", {
   delta_time <- 0.001
   n_jumps <- 1000
   corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
-  corr_jumps <- correlated_jumps(n, corr_mat)
+  corr_jumps <- correlated_jumps(n, corr_mat, delta_time)
   lapply(
     c(0, 1, 10, 100, 1000),
     function(n_j) {

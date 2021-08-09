@@ -82,13 +82,19 @@ node_mle_long <- function(times, data, thresholds, div = 1e5,
     output %in% c("vector", "matrix"),
     msg = paste('output should be "node" or "network", given', output)
   )
-  assertthat::are_equal(length(times), nrow(data))
+  assertthat::assert_that(
+    assertthat::are_equal(length(times), nrow(data))
+  )
 
   n_nodes <- ncol(data)
   n_data <- nrow(data)
 
   if (div < n_data) {
-    idx <- seq(1, n_data + div, by = div)
+    idx <- seq(1, n_data + div - 1, by = div)
+    idx <- idx[idx <= n_data]
+    if (!(n_data %in% idx)) {
+      idx <- c(idx, n_data)
+    }
   } else {
     idx <- c(1, n_data + 1)
   }

@@ -45,26 +45,23 @@ levy_recovery <- function(adj, data, times, look_ahead = 1) {
   ) # create integral component-wise
 
   # few dimension checks
-  assertthat::are_equal(nrow(integrated_x), nrow(diff_x))
-  assertthat::are_equal(nrow(data) - look_ahead, nrow(diff_x))
-  assertthat::are_equal(dim(adj)[1], ncol(integrated_x))
+  assertthat::assert_that(nrow(integrated_x) == nrow(diff_x))
+  assertthat::assert_that((nrow(data) - look_ahead) == nrow(diff_x))
+  assertthat::assert_that(dim(adj)[1] == ncol(integrated_x))
 
-  q_integrated_x <- apply(integrated_x, MARGIN = 1, function(x) {
-    return(adj %*% x)
-  })
-  if (any(vapply(class(adj), function(x) {
-    x == "dgCMatrix"
-  }, T))) {
-    # getting rid of potential sparse matrix
-    q_integrated_x <- lapply(q_integrated_x, as.matrix)
-    q_integrated_x <- t(as.matrix(as.data.frame(q_integrated_x)))
-  } else {
-    q_integrated_x <- t(q_integrated_x)
-  }
+  q_integrated_x <- apply(
+    integrated_x,
+    MARGIN = 1, FUN = function(x) {
+      return(as.matrix(adj %*% x))
+    }
+  )
+  q_integrated_x <- t(q_integrated_x)
 
   # TODO implement ghyp
   # TODO implement with m > 1
-  assertthat::are_equal(dim(diff_x), dim(q_integrated_x))
+  assertthat::assert_that(
+    assertthat::are_equal(dim(diff_x), dim(q_integrated_x))
+  )
 
   recover <- diff_x + q_integrated_x
 
@@ -79,13 +76,16 @@ levy_recovery <- function(adj, data, times, look_ahead = 1) {
 #' @param data Data to fit.
 #' @param ghyp_names Ghyp distribution names
 #'     (in `c('NIG', 'GAUSS', 'VG', 'T', 'FULL')`).
+#' @param silent
+#' @param ... Extra options given to the ghyp fitting.
+#' @note `ghyp` fitting is forced to be silent.
 #' @return List of fitted Generalised Hyperbolic distribution.
 #' @examples
 #' n <- 500
 #' data <- cbind(ghyp::rghyp(n, ghyp::ghyp()), ghyp::rghyp(n, ghyp::ghyp()))
-#' fit_ghyp_diffusion(data = data)
+#' fit_ghyp_diffusion(data = data, silent = T)
 #' @export
-fit_ghyp_diffusion <- function(data, ghyp_names = "FULL") {
+fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
   ghyp_model_list <- list(
     "NIG" = ghyp::fit.NIGmv,
     "GAUSS" = ghyp::fit.gaussmv,
@@ -93,15 +93,26 @@ fit_ghyp_diffusion <- function(data, ghyp_names = "FULL") {
     "T" = ghyp::fit.tmv,
     "FULL" = ghyp::fit.ghypmv
   )
-  assertthat::assert_that(all(lapply(ghyp_names, function(x) {
-    x %in% c("NIG", "GAUSS", "VG", "T", "FULL")
-  })))
+
+  assertthat::assert_that(
+    all(
+      vapply(
+        ghyp_names, function(x) x %in% names(ghyp_model_list),
+        FUN.VALUE = T
+      )
+    )
+  )
 
   ghyp_models <- ghyp_model_list[ghyp_names]
   i <- 1
   res <- list()
   for (model in ghyp_models) {
-    res[[ghyp_names[i]]] <- model(data = data)
+    if (ghyp_names[i] == "GAUSS") {
+      res[[ghyp_names[i]]] <- model(data = data, ...)
+    } else {
+      res[[ghyp_names[i]]] <- model(data = data, silent = silent, ...)
+    }
+
     i <- i + 1
   }
   return(res)
@@ -154,9 +165,6 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
     poisson_intensities <- lapply(jumps_fn_optim, function(fn_optim) {
       exp(optim(par = c(-1), fn = fn_optim, method = "BFGS")$par)
     })
-    lapply(jumps_fn_optim, function(fn_optim) {
-      print(optim(par = c(-1), fn = fn_optim, method = "BFGS"))
-    })
     poisson_intensities <- do.call(c, poisson_intensities)
     filtered_delta_data <- abs_delta_data * filter_jumps
     rv_c <- (t(filtered_delta_data) %*% filtered_delta_data)
@@ -180,7 +188,7 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
   }
 }
 
-bi_poower_variation <- function(data, mesh_size) {
+bi_power_variation <- function(data, mesh_size) {
   abs_diff_data <- abs(apply(data, 2, diff))
   n_data <- nrow(abs_diff_data)
   abs_diff_data_wo_first <- abs_diff_data[2:n_data, ]

@@ -4,13 +4,15 @@
 \alias{fit_ghyp_diffusion}
 \title{Fit a Generalised Hyperbolic distribution.}
 \usage{
-fit_ghyp_diffusion(data, ghyp_names = "FULL")
+fit_ghyp_diffusion(data, ghyp_names = "FULL", silent = T, ...)
 }
 \arguments{
 \item{data}{Data to fit.}
 
 \item{ghyp_names}{Ghyp distribution names
 (in \code{c('NIG', 'GAUSS', 'VG', 'T', 'FULL')}).}
+
+\item{...}{Extra options given to the ghyp fitting.}
 }
 \value{
 List of fitted Generalised Hyperbolic distribution.
@@ -18,8 +20,11 @@ List of fitted Generalised Hyperbolic distribution.
 \description{
 Fit a Generalised Hyperbolic distribution.
 }
+\note{
+\code{ghyp} fitting is forced to be silent.
+}
 \examples{
 n <- 500
 data <- cbind(ghyp::rghyp(n, ghyp::ghyp()), ghyp::rghyp(n, ghyp::ghyp()))
-fit_ghyp_diffusion(data = data)
+fit_ghyp_diffusion(data = data, silent=T)
 }

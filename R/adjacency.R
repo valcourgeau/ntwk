@@ -72,6 +72,11 @@ lattice_network <- function(d, theta_1, theta_2, directed = F) {
       diag(1, nrow = d - d_real^2)
     )
     net_matrix <- cbind(net_matrix, net_mat_tmp)
+  } else {
+    stop(paste(
+      "Cannot generate a lattice for d =",
+      d, "- choose a larger value for `d`."
+    ))
   }
 
   net_matrix <- theta_1 * row_normalised(net_matrix)

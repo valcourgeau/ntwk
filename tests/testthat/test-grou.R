@@ -30,7 +30,7 @@ testthat::test_that("core_node_mle_kron_numerator_doubling_unif_times", {
 
 testthat::test_that("grou_mle__shapes", {
   n_nodes <- 50
-  n_sample <- 50000
+  n_sample <- 10000
   set.seed(42)
   adj_test <- diag(n_nodes)
   adj_test[2, 1] <- 0.5
@@ -69,7 +69,7 @@ testthat::test_that("grou_mle__shapes", {
 
 testthat::test_that("grou_mle__values", {
   n_nodes <- 50
-  n_sample <- 50000
+  n_sample <- 15000
   set.seed(42)
   adj_test <- diag(n_nodes)
   adj_test[2, 1] <- 0.5
@@ -92,7 +92,7 @@ testthat::test_that("grou_mle__values", {
     times = seq(0, by = mesh_size, length.out = n_sample), data = sample_path,
     adj = adj_test, div = 1e3, mode = "network", output = "vector"
   )
-  testthat::expect_equal(net_vec, c(.5, 1.), tolerance = .2)
+  testthat::expect_equal(net_vec, c(.5, 1.), tolerance = .5)
 })
 
 testthat::test_that("grou_mle__div_larger_than_sample_size", {

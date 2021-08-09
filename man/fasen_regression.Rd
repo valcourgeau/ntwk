@@ -3,7 +3,7 @@
 \name{fasen_regression}
 \alias{fasen_regression}
 \title{Fasen's multivariate OU least squares regression
-\url{https://doi.org/10.1016/j.jeconom.2012.08.019}.}
+\doi{/10.1016/j.jeconom.2012.08.019}.}
 \usage{
 fasen_regression(data)
 }
@@ -15,7 +15,7 @@ A \code{(d, d)} least square matrix.
 }
 \description{
 Fasen's multivariate OU least squares regression
-\url{https://doi.org/10.1016/j.jeconom.2012.08.019}.
+\doi{/10.1016/j.jeconom.2012.08.019}.
 }
 \examples{
 n <- 100

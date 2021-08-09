@@ -2,7 +2,7 @@
 % Please edit documentation in R/path_generation.R
 \name{correlated_brownian_noise}
 \alias{correlated_brownian_noise}
-\title{Generates multi-dimensional correlated Brownian motion increments}
+\title{Generates multidimensional correlated Brownian motion increments}
 \usage{
 correlated_brownian_noise(sigma_matrix, n, delta_time)
 }
@@ -14,7 +14,7 @@ correlated_brownian_noise(sigma_matrix, n, delta_time)
 \item{delta_time}{Time difference between steps}
 }
 \description{
-Generates multi-dimensional correlated Brownian motion increments
+Generates multidimensional correlated Brownian motion increments
 }
 \examples{
 set.seed(42)
