@@ -76,7 +76,7 @@ levy_recovery <- function(adj, data, times, look_ahead = 1) {
 #' @param data Data to fit.
 #' @param ghyp_names Ghyp distribution names
 #'     (in `c('NIG', 'GAUSS', 'VG', 'T', 'FULL')`).
-#' @param silent
+#' @param silent Boolean to silence the noise inference.
 #' @param ... Extra options given to the ghyp fitting.
 #' @note `ghyp` fitting is forced to be silent.
 #' @return List of fitted Generalised Hyperbolic distribution.

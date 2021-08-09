@@ -12,6 +12,8 @@ fit_ghyp_diffusion(data, ghyp_names = "FULL", silent = T, ...)
 \item{ghyp_names}{Ghyp distribution names
 (in \code{c('NIG', 'GAUSS', 'VG', 'T', 'FULL')}).}
 
+\item{silent}{Boolean to silence the noise inference.}
+
 \item{...}{Extra options given to the ghyp fitting.}
 }
 \value{
@@ -26,5 +28,5 @@ Fit a Generalised Hyperbolic distribution.
 \examples{
 n <- 500
 data <- cbind(ghyp::rghyp(n, ghyp::ghyp()), ghyp::rghyp(n, ghyp::ghyp()))
-fit_ghyp_diffusion(data = data, silent=T)
+fit_ghyp_diffusion(data = data, silent = T)
 }

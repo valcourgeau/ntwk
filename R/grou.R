@@ -21,7 +21,9 @@ node_mle <- function(times, data, output = "vector") {
     output %in% c("vector", "matrix"),
     msg = paste('output should be "node" or "network", given', output)
   )
-  assertthat::are_equal(length(times), nrow(data))
+  assertthat::assert_that(
+    assertthat::are_equal(length(times), nrow(data))
+  )
 
   n_nodes <- ncol(data)
   n_data <- nrow(data)
