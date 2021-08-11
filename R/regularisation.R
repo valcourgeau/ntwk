@@ -29,7 +29,7 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #' @param output Output type: either "vector"or "matrix".
 #' @param gamma Adaptive MLE scaling parameter.
 #' @param use_scaling Brownian motion covariance matrix scaling
-#'     in the likelihoo.
+#'     in the likelihood.
 #' @return Regularised dynamics matrix
 #' @examples
 #' n <- 1000
