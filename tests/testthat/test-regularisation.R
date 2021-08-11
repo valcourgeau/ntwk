@@ -1,3 +1,52 @@
+
+testthat::test_that("get_reg_fn__type", {
+  set.seed(45)
+  n <- 10000
+  d <- 4
+  adj_test <- diag(d)
+  adj_test[2, 1] <- 0.5
+  adj_test[3, 1] <- 0.1
+
+  reg_fn <- get_reg_fn("l1")
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  testthat::expect_equal(reg_fn(x), sum(abs(x)))
+
+  reg_fn <- get_reg_fn("l2")
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  testthat::expect_equal(reg_fn(x), sum(x^2))
+
+  beta_value <- 0.4999
+  delta_time <- 0.1
+  y_init <- rep(0, d)
+
+  times <- seq(0, by = delta_time, length.out = n)
+  noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
+  path <- construct_path(
+    nw_topo = adj_test, noise = noise, y_init = y_init, delta_time = delta_time
+  )
+
+  grou_mle_fit <- grou_mle(
+    times = times, data = path, thresholds = NA,
+    mode = "node", output = "vector"
+  )
+
+  reg_fn <- get_reg_fn("adaptive", mle = grou_mle_fit, gamma = 1)
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  testthat::expect_equal(
+    reg_fn(grou_mle_fit),
+    sum(abs(rep(1, length(grou_mle_fit))))
+  )
+  reg_fn <- get_reg_fn("adaptive", mle = grou_mle_fit, gamma = 3)
+  testthat::expect_equal(
+    reg_fn(grou_mle_fit),
+    sum(abs(grou_mle_fit^{
+      1 - 3
+    }))
+  )
+})
+
+
+
 testthat::test_that("grou_regularisation__shape", {
   set.seed(45)
   n <- 10000

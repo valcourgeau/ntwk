@@ -52,8 +52,8 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
 
   n_nodes <- ncol(data)
   mle_value <- grou_mle(
-    times = times, data = data,
-    thresholds = thresholds, div = div, output = "vector"
+    times = times, data = data, thresholds = thresholds,
+    div = div, mode = "node", output = "vector"
   )
 
   if (use_scaling) {
