@@ -20,7 +20,8 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
   return(fn)
 }
 
-
+#' Regularisation schemes for the GrOU process that implements
+#' a Lasso, Ridge or Adaptive Lasso penalty.
 #' @param times Times at which data is given
 #' @param data Values to compute the MLE with.
 #' @param thresholds Jump threshold values.
@@ -41,12 +42,14 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #'   noise = noise, y_init = rep(0, d), delta_time = delta_time
 #' )
 #' grou_regularisation(times, data, adj = diag(d), div = 1e2)
+#' @importFrom stats cov
 #' @export
 grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
                                 reg = "l1", div = 1e5, output = "vector",
                                 gamma = NA, use_scaling = NA) {
   # TODO(val) add warning for lambda
   # TODO(val) add scaling
+  # TODO(val) add filtering on levy increments
   assertthat::assert_that(output %in% c("vector", "matrix"))
   assertthat::assert_that(is.na(lambda) | lambda >= 0.0)
 

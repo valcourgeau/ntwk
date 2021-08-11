@@ -17,7 +17,6 @@
 #' node_mle(times, data)
 #' @export
 node_mle <- function(times, data, output = "vector") {
-  stop("Deprecated")
   assertthat::assert_that(
     output %in% c("vector", "matrix"),
     msg = paste('output should be "node" or "network", given', output)

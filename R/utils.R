@@ -1,7 +1,8 @@
 #' Normalise a square matrix by dividing elements by the sum of
 #' off-diagonal entries row-wise. Note: sets diagonal to zero.
 #' @param adj Adjacency matrix to normalise
-#' @param keep_value Whether to keep off-diagonal values or normalise fully.
+#' @param keep_values Whether to keep off-diagonal values
+#'     or normalise fully (default).
 #' @return A matrix based on `adj` with zero diagonals
 #'     and off-diagonal elements sum to one.
 #' @example row_normalised(matrix(1, 5, 5))

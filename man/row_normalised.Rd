@@ -10,7 +10,8 @@ row_normalised(adj, keep_values = F)
 \arguments{
 \item{adj}{Adjacency matrix to normalise}
 
-\item{keep_value}{Whether to keep off-diagonal values or normalise fully.}
+\item{keep_values}{Whether to keep off-diagonal values
+or normalise fully (default).}
 }
 \value{
 A matrix based on \code{adj} with zero diagonals
