@@ -10,6 +10,16 @@ node_mle_components(times, data, thresholds, div = 1e+05, output = "vector")
 \item{times}{Times at which data is given}
 
 \item{data}{Values to compute the MLE with.}
+
+\item{thresholds}{Jump threshold values.}
+
+\item{div}{Batch size/divisor to avoid large memory allocation.}
+
+\item{output}{String to indicate
+the form of the output: \code{vector} or \code{matrix}.}
+}
+\value{
+Computes the GrOU MLE components.
 }
 \description{
 Returns the components (i.e. numerator and denominator) of the MLE

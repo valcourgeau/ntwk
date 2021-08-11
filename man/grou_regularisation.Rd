@@ -14,7 +14,7 @@ grou_regularisation(
   div = 1e+05,
   output = "vector",
   gamma = NA,
-  use_scaling = NA
+  use_scaling = F
 )
 }
 \arguments{
@@ -54,5 +54,5 @@ data <- construct_path(
   diag(d),
   noise = noise, y_init = rep(0, d), delta_time = delta_time
 )
-grou_regularisation(times=times, data=data, lambda=1, div = 1e2)
+grou_regularisation(times = times, data = data, lambda = 1, div = 1e2)
 }

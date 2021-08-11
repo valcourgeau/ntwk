@@ -87,7 +87,11 @@ core_node_mle <- function(times, data, thresholds = NA) {
 #' Returns the components (i.e. numerator and denominator) of the MLE
 #' @param times Times at which data is given
 #' @param data Values to compute the MLE with.
-#'
+#' @param thresholds Jump threshold values.
+#' @param div Batch size/divisor to avoid large memory allocation.
+#' @param output String to indicate
+#'     the form of the output: `vector` or `matrix`.
+#' @return Computes the GrOU MLE components.
 node_mle_components <- function(times, data, thresholds, div = 1e5,
                                 output = "vector") {
   assertthat::assert_that(

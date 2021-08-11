@@ -48,7 +48,7 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #' @export
 grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
                                 reg = "l1", div = 1e5, output = "vector",
-                                gamma = NA, use_scaling = NA) {
+                                gamma = NA, use_scaling = F) {
   # TODO(val) add warning for lambda
   # TODO(val) add scaling
   # TODO(val) add filtering on levy increments
