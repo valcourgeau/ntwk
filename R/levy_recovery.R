@@ -167,6 +167,9 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
     })
     poisson_intensities <- do.call(c, poisson_intensities)
     filtered_delta_data <- abs_delta_data * filter_jumps
+    filtered_delta_data <- apply(
+      filtered_delta_data, 2, function(x) x - mean(x[x != 0])
+    )
     rv_c <- (t(filtered_delta_data) %*% filtered_delta_data)
     rv_c <- rv_c / (mesh_size * n_data)
     rv_total <- (t(abs_delta_data) %*% abs_delta_data) / (mesh_size * n_data)

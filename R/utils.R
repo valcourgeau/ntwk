@@ -1,15 +1,16 @@
 #' Normalise a square matrix by dividing elements by the sum of
 #' off-diagonal entries row-wise. Note: sets diagonal to zero.
 #' @param adj Adjacency matrix to normalise
+#' @param keep_value Whether to keep off-diagonal values or normalise fully.
 #' @return A matrix based on `adj` with zero diagonals
 #'     and off-diagonal elements sum to one.
 #' @example row_normalised(matrix(1, 5, 5))
-row_normalised <- function(adj) {
+row_normalised <- function(adj, keep_values = F) {
   # zero on diag, row sum to 1 with positive weights
 
   diag(adj) <- 0.0
-  adj[adj != 0.0] <- 1.0
-  divisors <- pmax(rowSums(adj), 1.0)
+  if (!keep_values) adj[abs(adj) != 0.0] <- 1.0
+  divisors <- pmax(rowSums(adj != 0.0), 1.0)
 
   return(diag(1.0 / divisors) %*% adj)
 }

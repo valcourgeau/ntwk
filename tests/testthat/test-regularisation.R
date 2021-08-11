@@ -1,0 +1,39 @@
+testthat::test_that("grou_regularisation__shape", {
+  set.seed(45)
+  n <- 10000
+  d <- 4
+  adj_test <- diag(d)
+  adj_test[2, 1] <- 0.5
+  adj_test[3, 1] <- 0.1
+
+  corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
+  beta_value <- 0.4999
+  delta_time <- 0.1
+  y_init <- rep(0, d)
+
+  times <- seq(0, by = delta_time, length.out = n)
+  noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
+  path <- construct_path(
+    nw_topo = adj_test, noise = noise, y_init = y_init, delta_time = delta_time
+  )
+
+  reg_adj <- grou_regularisation(
+    times = times,
+    data = path,
+    thresholds = NA,
+    lambda = 10,
+    reg = "l1",
+    output = "matrix",
+    gamma = 3, use_scaling = T
+  )
+  testthat::expect_equal(dim(reg_adj), c(d, d))
+  print("check")
+  grou_mle_fit <- grou_mle(
+    times = times, data = path, thresholds = NA,
+    mode = "node", output = "matrix"
+  )
+
+  print(mean(diag(grou_mle_fit)))
+  print(paste("ratio", sum(reg_adj[adj_test > 0] / adj_test[adj_test > 0])))
+  testthat::expect_equal(reg_adj, adj_test, tolerance = .2)
+})

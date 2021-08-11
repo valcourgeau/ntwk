@@ -5,10 +5,12 @@
 \title{Normalise a square matrix by dividing elements by the sum of
 off-diagonal entries row-wise. Note: sets diagonal to zero.}
 \usage{
-row_normalised(adj)
+row_normalised(adj, keep_values = F)
 }
 \arguments{
 \item{adj}{Adjacency matrix to normalise}
+
+\item{keep_value}{Whether to keep off-diagonal values or normalise fully.}
 }
 \value{
 A matrix based on \code{adj} with zero diagonals

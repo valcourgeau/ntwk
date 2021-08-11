@@ -17,6 +17,7 @@
 #' node_mle(times, data)
 #' @export
 node_mle <- function(times, data, output = "vector") {
+  stop("Deprecated")
   assertthat::assert_that(
     output %in% c("vector", "matrix"),
     msg = paste('output should be "node" or "network", given', output)
@@ -52,6 +53,12 @@ node_mle <- function(times, data, output = "vector") {
 #' @param thresholds Jump threshold values. Default is `NA` (no filtering).
 #' @return A list of two matrices (numerator and denominator).
 core_node_mle <- function(times, data, thresholds = NA) {
+  if (is.character(thresholds)) {
+    stop(paste(
+      "`thresholds` should be NA or numeric. Received:", class(thresholds)
+    ))
+  }
+
   n_nodes <- ncol(data)
   n_data <- nrow(data)
   delta_t <- diff(times)
@@ -78,8 +85,9 @@ core_node_mle <- function(times, data, thresholds = NA) {
   return(list(numerator = numerator, denominator = denominator))
 }
 
-node_mle_long <- function(times, data, thresholds, div = 1e5,
-                          output = "vector") {
+#' Returns the components (i.e. numerator and denominator) of the MLE
+node_mle_components <- function(times, data, thresholds, div = 1e5,
+                                output = "vector") {
   assertthat::assert_that(
     output %in% c("vector", "matrix"),
     msg = paste('output should be "node" or "network", given', output)
@@ -115,25 +123,51 @@ node_mle_long <- function(times, data, thresholds, div = 1e5,
   numerator <- Reduce("+", lapply(collection_num_denom, function(coll) {
     coll$numerator
   }))
-  sd_numerator <- sd(numerator)
-  numerator <- numerator / sd_numerator
   denominator <- Reduce("+", lapply(collection_num_denom, function(coll) {
     coll$denominator
   }))
+
+  # post-processing
+  numerator <- matrix(numerator, nrow = n_nodes, byrow = FALSE)
+  sd_numerator <- sd(numerator)
   sd_denominator <- sd(denominator)
 
+  return(list(
+    numerator = numerator, denominator = denominator,
+    sd_numerator = sd_numerator, sd_denominator = sd_denominator
+  ))
+}
+
+#' Constructs the MLE from its components
+make_node_mle <- function(components, output) {
+  # unpacking components
+  numerator <- components$numerator
+  sd_numerator <- components$sd_numerator
+  denominator <- components$denominator
+  sd_denominator <- components$sd_denominator
+
+  # Numerator
+  numerator <- numerator / sd_numerator
+
+  # Denominator
   inv_denominator <- solve(denominator / sd_denominator)
   inv_denominator <- inv_denominator / sd_denominator
-  numerator <- matrix(numerator, nrow = n_nodes, byrow = FALSE)
 
   mle <- apply(numerator, MARGIN = 2, function(x) {
     -inv_denominator %*% x
   }) * sd_numerator
+
   if (output == "vector") {
     return(c(mle))
   } else {
     return(mle)
   }
+}
+
+node_mle_long <- function(times, data, thresholds, div = 1e5,
+                          output = "vector") {
+  components <- node_mle_components(times, data, thresholds, div, output)
+  return(make_node_mle(components, output))
 }
 
 #' Computes the GrOUs MLE of a batch of data
@@ -163,29 +197,35 @@ grou_mle <- function(times, data, adj = NA, thresholds = NA,
     mode %in% c("node", "network"),
     msg = paste('mode should be "node" or "network", given', mode)
   )
-  if (length(times) != nrow(data)) stop("length(times)!=nrow(data)")
-  if (all(is.na(adj))) {
-    return(node_mle)
-  }
+  assertthat::assert_that(
+    length(times) == nrow(data),
+    msg = "`times` and `data` should have compatible length and shape.s"
+  )
 
-  n_nodes <- ncol(adj)
-  adj_normalised <- row_normalised(adj)
+  n_nodes <- ncol(data)
+  if (any(is.na(adj))) {
+    adj_normalised <- row_normalised(matrix(1, n_nodes, n_nodes))
+  } else {
+    adj_normalised <- row_normalised(adj)
+  }
   diag(adj_normalised) <- 0.0 # to be sure
 
-  node_mle <- node_mle_long(
+  node_mle_value <- node_mle_long(
     times, data,
     thresholds = thresholds, div = div, output = "vector"
   )
-  node_mle <- as.vector(t(matrix(node_mle, nrow = n_nodes)))
+  node_mle_value <- as.vector(t(matrix(node_mle_value, nrow = n_nodes)))
+
+  # post-processing with mode, output and adj
   if (mode == "node") {
     adj_normalised[adj_normalised != 0] <- 1
     if (output == "vector") {
       d_a <- c(diag(n_nodes) + adj_normalised)
-      return(d_a * node_mle)
+      return(d_a * node_mle_value)
     } else {
       if (output == "matrix") {
         adj_full <- diag(n_nodes) + adj_normalised
-        return(adj_full * matrix(node_mle, n_nodes, n_nodes, byrow = F))
+        return(adj_full * matrix(node_mle_value, n_nodes, n_nodes, byrow = F))
       }
     }
   } else {
@@ -197,10 +237,10 @@ grou_mle <- function(times, data, adj = NA, thresholds = NA,
     if (a_l2 < .Machine$double.eps) {
       theta_1 <- 0.0
     } else {
-      theta_1 <- (as.vector(adj_ones) %*% node_mle) / a_l2
+      theta_1 <- (as.vector(adj_ones) %*% node_mle_value) / a_l2
     }
 
-    theta_2 <- (c(diag(n_nodes)) %*% node_mle) / n_nodes
+    theta_2 <- (c(diag(n_nodes)) %*% node_mle_value) / n_nodes
     if (output == "vector") {
       return(c(theta_1, theta_2))
     } else {

@@ -24,6 +24,36 @@ test_that("utils_row_normalised__off_diag", {
   testthat::expect_true(all(rowSums(row_adj) == 1.))
 })
 
+test_that("utils_row_normalised__keep_value", {
+  d <- 3
+  theta_2 <- 2.0
+  thetas_1 <- seq(-1, 1, length.out = 10)
+
+  for (theta_1 in thetas_1) {
+    adj <- matrix(1, d, d)
+    diag(adj) <- 0
+    adj <- theta_1 * adj + theta_2 * diag(d)
+    row_adj <- row_normalised(adj, keep_value = T)
+    testthat::expect_equal(sum(abs(diag(row_adj))), 0)
+    testthat::expect_equal(
+      apply(row_adj, 1, function(x) sum(x)),
+      rep(theta_1, d)
+    )
+  }
+
+  for (theta_1 in thetas_1) {
+    adj <- matrix(1, d, d)
+    diag(adj) <- 0
+    adj <- theta_1 * adj + theta_2 * diag(d)
+    row_adj <- row_normalised(adj, keep_value = F)
+    testthat::expect_equal(sum(abs(diag(row_adj))), 0)
+    testthat::expect_equal(
+      apply(row_adj, 1, function(x) sum(x)),
+      rep(1, d)
+    )
+  }
+})
+
 test_that("utils_concatenate_col__shape_and_values", {
   d <- 10
   col_to_concat <- seq(d * d)
