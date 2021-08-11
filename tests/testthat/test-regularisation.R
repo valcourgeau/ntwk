@@ -27,13 +27,16 @@ testthat::test_that("grou_regularisation__shape", {
     gamma = 3, use_scaling = T
   )
   testthat::expect_equal(dim(reg_adj), c(d, d))
-  print("check")
+
   grou_mle_fit <- grou_mle(
     times = times, data = path, thresholds = NA,
     mode = "node", output = "matrix"
   )
 
-  print(mean(diag(grou_mle_fit)))
-  print(paste("ratio", sum(reg_adj[adj_test > 0] / adj_test[adj_test > 0])))
+  testthat::expect_equal(
+    mean(reg_adj[adj_test > 0] / adj_test[adj_test > 0]),
+    1.0,
+    tolerance = 0.15
+  )
   testthat::expect_equal(reg_adj, adj_test, tolerance = .2)
 })

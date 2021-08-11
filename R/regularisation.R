@@ -103,8 +103,6 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
 
   reg_optim <- optim(par = mle_value, fn = fn_optim, method = "BFGS")
   reg_vector <- reg_optim$par
-  print("reg_optim")
-  print(reg_optim)
   if (output == "vector") {
     return(reg_vector)
   } else {
