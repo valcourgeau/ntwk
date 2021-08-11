@@ -25,12 +25,14 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #' @param times Times at which data is given
 #' @param data Values to compute the MLE with.
 #' @param thresholds Jump threshold values.
+#' @param lambda Penalty parameter.
+#' @param reg Type of penalty (`l1`, `l2` or `adaptive`).
 #' @param div Batch size/divisor to avoid large memory allocation.
 #' @param output Output type: either "vector"or "matrix".
 #' @param gamma Adaptive MLE scaling parameter.
 #' @param use_scaling Brownian motion covariance matrix scaling
 #'     in the likelihood.
-#' @return Regularised dynamics matrix
+#' @return Regularised dynamics matrix.
 #' @examples
 #' n <- 1000
 #' d <- 10
