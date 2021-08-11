@@ -6,6 +6,11 @@
 \usage{
 node_mle_components(times, data, thresholds, div = 1e+05, output = "vector")
 }
+\arguments{
+\item{times}{Times at which data is given}
+
+\item{data}{Values to compute the MLE with.}
+}
 \description{
 Returns the components (i.e. numerator and denominator) of the MLE
 }

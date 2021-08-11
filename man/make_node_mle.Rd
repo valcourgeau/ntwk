@@ -6,6 +6,15 @@
 \usage{
 make_node_mle(components, output)
 }
+\arguments{
+\item{components}{List of components necessary to implement GrOU MLE.}
+
+\item{output}{String to indicate
+the form of the output: \code{vector} or \code{matrix}.}
+}
+\value{
+GrOU MLE made from \code{components}.
+}
 \description{
 Constructs the MLE from its components
 }

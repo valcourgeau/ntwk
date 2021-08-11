@@ -85,6 +85,9 @@ core_node_mle <- function(times, data, thresholds = NA) {
 }
 
 #' Returns the components (i.e. numerator and denominator) of the MLE
+#' @param times Times at which data is given
+#' @param data Values to compute the MLE with.
+#'
 node_mle_components <- function(times, data, thresholds, div = 1e5,
                                 output = "vector") {
   assertthat::assert_that(
@@ -138,6 +141,10 @@ node_mle_components <- function(times, data, thresholds, div = 1e5,
 }
 
 #' Constructs the MLE from its components
+#' @param components List of components necessary to implement GrOU MLE.
+#' @param output String to indicate
+#'     the form of the output: `vector` or `matrix`.
+#' @return GrOU MLE made from `components`.
 make_node_mle <- function(components, output) {
   # unpacking components
   numerator <- components$numerator
@@ -163,6 +170,14 @@ make_node_mle <- function(components, output) {
   }
 }
 
+#' Constructs the Node MLE with jump thresholding
+#' @param times Times at which data is given
+#' @param data Values to compute the MLE with.
+#' @param thresholds Jump threshold values.
+#' @param div Batch size/divisor to avoid large memory allocation.
+#' @param output String to indicate
+#'     the form of the output: `vector` or `matrix`.
+#' @return The GrOU MLE in matrix/vector form in psi parametrisation.
 node_mle_long <- function(times, data, thresholds, div = 1e5,
                           output = "vector") {
   components <- node_mle_components(times, data, thresholds, div, output)
