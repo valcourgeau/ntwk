@@ -46,7 +46,6 @@ testthat::test_that("get_reg_fn__type", {
 })
 
 
-
 testthat::test_that("grou_regularisation__shape", {
   set.seed(23)
   n <- 10000

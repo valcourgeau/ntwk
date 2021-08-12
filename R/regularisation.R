@@ -54,8 +54,8 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
   # TODO(val) add scaling
   # TODO(val) add filtering on levy increments
   assertthat::assert_that(output %in% c("vector", "matrix"))
-  assertthat::assert_that(is.na(lambda) | lambda >= 0.0)
-  assertthat::assert_that(is.na(cut_off) | cut_off >= 0.0 | cut_off <= 1.)
+  assertthat::assert_that(any(c(is.na(lambda), lambda >= 0.0)))
+  assertthat::assert_that(any(c(is.na(cut_off), cut_off >= 0.0, cut_off <= 1.)))
 
 
   n_nodes <- ncol(data)

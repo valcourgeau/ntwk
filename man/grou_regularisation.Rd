@@ -14,6 +14,7 @@ grou_regularisation(
   div = 1e+05,
   output = "vector",
   gamma = NA,
+  cut_off = NA,
   use_scaling = F
 )
 }
@@ -33,6 +34,8 @@ grou_regularisation(
 \item{output}{Output type: either "vector"or "matrix".}
 
 \item{gamma}{Adaptive MLE scaling parameter.}
+
+\item{cut_off}{Sparsity proportion, defaults to \code{NA}.}
 
 \item{use_scaling}{Brownian motion covariance matrix scaling
 in the likelihood.}
