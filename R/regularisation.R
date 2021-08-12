@@ -45,7 +45,7 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #'   noise = noise, y_init = rep(0, d), delta_time = delta_time
 #' )
 #' grou_regularisation(times = times, data = data, lambda = 1, div = 1e2)
-#' @importFrom stats cov
+#' @importFrom stats cov quantile
 #' @export
 grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
                                 reg = "l1", div = 1e5, output = "vector",
@@ -111,6 +111,7 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
   reg_optim <- optim(par = mle_value, fn = fn_optim, method = "BFGS")
   reg_vector <- reg_optim$par
   if (!is.na(cut_off)) {
+    assertthat::assert_that(0 <= cut_off & cut_off <= 1)
     reg_vector[abs(reg_vector) < quantile(abs(reg_vector), cut_off)] <- 0
   }
 
