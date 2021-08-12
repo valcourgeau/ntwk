@@ -7,7 +7,7 @@
 fit_bm_compound_poisson(data, mesh_size, thresholds = NA)
 }
 \arguments{
-\item{data}{Data to fit.}
+\item{data}{Data to fit (increments).}
 
 \item{mesh_size}{Time difference of data.}
 

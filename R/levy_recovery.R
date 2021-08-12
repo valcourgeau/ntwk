@@ -119,7 +119,7 @@ fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
 }
 
 #' Fit Brownian motion mixture with Gaussian jumps.
-#' @param data Data to fit.
+#' @param data Data to fit (increments).
 #' @param mesh_size Time difference of data.
 #' @param thresholds Jump thresholds (Defaults to `NA`, no filtering).
 #' @return List of fitted Generalised Hyperbolic distribution.
@@ -134,28 +134,27 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
   data <- apply(data, 2, cumsum)
   # data are increments
   n_data <- nrow(data)
-  delta_data <- apply(data, 2, diff)
-  abs_delta_data <- abs(delta_data)
+  abs_data <- abs(data)
 
-  if (any(is.na(thresholds))) {
-    # No jump filtering
-    filter_jumps <- c(T)
-  } else {
-    assertthat::are_equal(length(thresholds), ncol(data))
-    filter_jumps <- t(apply(abs_delta_data, 1, "<=", thresholds))
-  }
+  dt_fltrd <- data_filtering(data, thresholds)
+  filter_jumps <- dt_fltrd$filter
+  filter_data <- dt_fltrd$data
 
-  if (sum(!filter_jumps) > 0) {
+  # Realised variance - cts
+  rv_c <- (t(filter_data) %*% filter_data)
+  rv_c <- rv_c / (mesh_size * n_data)
+
+  if (sum(filter_jumps) > 0) {
     jumps_dt <- apply(filter_jumps, 2, function(x) {
-      diff(which(as.numeric(x) == 0)) * mesh_size
+      diff(which(as.numeric(x) == 1)) * mesh_size
     })
     jumps_n <- lapply(jumps_dt, length)
     jumps_fn_optim <- lapply(
       jumps_dt,
       function(times) {
-        function(lambda) {
-          prob_no_jump <- exp(-exp(lambda))
-          loglik_1 <- sum(log(1.0 - exp(-exp(lambda) * times)))
+        function(log_lambda) {
+          prob_no_jump <- exp(-exp(log_lambda))
+          loglik_1 <- sum(log(1.0 - exp(-exp(log_lambda) * times)))
           loglik_2 <- log(prob_no_jump) * (n_data * mesh_size - sum(times))
           loglik <- loglik_1 + loglik_2
           return(-loglik)
@@ -166,29 +165,35 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
       exp(optim(par = c(-1), fn = fn_optim, method = "BFGS")$par)
     })
     poisson_intensities <- do.call(c, poisson_intensities)
-    filtered_delta_data <- abs_delta_data * filter_jumps
     filtered_delta_data <- apply(
       filtered_delta_data, 2, function(x) x - mean(x[x != 0])
     )
-    rv_c <- (t(filtered_delta_data) %*% filtered_delta_data)
-    rv_c <- rv_c / (mesh_size * n_data)
-    rv_total <- (t(abs_delta_data) %*% abs_delta_data) / (mesh_size * n_data)
+
+    # Realised variance - total
+    rv_total <- (t(abs_data) %*% abs_data) / (mesh_size * n_data)
+
+    # Realised variance - discontinuous
     rv_d <- as.matrix(rv_total - rv_c)
     jump_sigma <- t(t(rv_d) / (poisson_intensities))
 
     jump_sigma <- as.matrix(Matrix::nearPD(jump_sigma, corr = FALSE)$mat)
     return(
       list(
-        sigma = rv_c,
-        poisson = poisson_intensities,
-        jump_sigma = jump_sigma,
-        n_jumps = jumps_n
+        sigma = rv_c, poisson = poisson_intensities,
+        jump_sigma = jump_sigma, n_jumps = jumps_n
       )
     )
   } else {
-    rv_c <- (t(abs_delta_data) %*% abs_delta_data) / (mesh_size * n_data)
-    return(list(sigma = rv_c, poisson = NA, jump_sigma = NA, n_jumps = NA))
+    poisson_intensities <- NA
+    jump_sigma <- NA
+    n_jumps <- NA
   }
+  return(
+    list(
+      sigma = rv_c, poisson = poisson_intensities,
+      jump_sigma = jump_sigma, n_jumps = n_jumps
+    )
+  )
 }
 
 bi_power_variation <- function(data, mesh_size) {

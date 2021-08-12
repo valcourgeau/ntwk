@@ -82,3 +82,25 @@ test_that("utils_augmented_diag__shape_values", {
     }
   }
 })
+
+test_that("utils_data_filtering_diag__shape_values", {
+  n <- 10000
+  d <- 5
+  data <- matrix(rnorm(n * d), ncol = d)
+
+  # No filtering
+  testthat::expect_equal(data_filtering(data)$data, data)
+
+  # Filtering everything
+  expected_vals <- matrix(0, nrow = nrow(data), ncol = ncol(data))
+  testthat::expect_equal(data_filtering(data, 0.0)$data, expected_vals)
+  testthat::expect_equal(data_filtering(data, rep(0.0, d))$data, expected_vals)
+  testthat::expect_equal(
+    dim(data_filtering(data, rep(0.0, d))$filter), c(n, d)
+  )
+
+  # Filtering only the first col
+  tmp <- data_filtering(data, c(0.0, rep(NA, d - 1)))$data
+  testthat::expect_equal(tmp[, 2:d], data[, 2:d])
+  testthat::expect_equal(tmp[, 1], rep(0, n))
+})

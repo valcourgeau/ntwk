@@ -85,3 +85,61 @@ augmented_diag <- function(d, offset) {
     return(mat_temp)
   }
 }
+
+
+#' Filters the data above the thresholds (set to zero).
+#' Thresholds can be a single value, or equal to the number of rows.
+#' If `thresholds` is set to `NA`, no thresholding happens.
+#' @param data Data to filter. Can be vector or matrix.
+#' @param thresholds Filtering thresholds. Defaults to `NA` but can be
+#'     a mixture of `NA`s and numerical values
+#'     (with length equal to `nrow(data)`).
+#' @return List of filtered data vector or matrix (`$data`)
+#'     and binary matrix of filtered times (`filter`) (`T` means filtered).
+#' @importFrom stats rnorm
+#' @examples
+#' n <- 10000
+#' d <- 5
+#' data <- matrix(rnorm(n * d), ncol = d)
+#'
+#' # No filtering
+#' data_filtering(data)
+#'
+#' # Filtering any below the 50% quantile
+#' data_filtering(data, 0.0)
+#' data_filtering(data, rep(0.0, d))
+#'
+#' # Filtering only the first col
+#' data_filtering(data, c(0.0, rep(NA, d - 1)))
+#' @export
+data_filtering <- function(data, thresholds = NA) {
+  assertthat::assert_that(any(c(is.na(thresholds), is.numeric(thresholds))))
+  c <- abs(data)
+  if (is.vector(data)) {
+    if (all(is.na(thresholds))) {
+      filtered_data <- data
+      binary_data <- matrix(F, length(data))
+    } else {
+      assertthat::assert_that(
+        assertthat::are_equal(length(thresholds), 1)
+      )
+      binary_data <- abs(data) > thresholds
+      binary_data[is.na(binary_data)] <- F
+      filtered_data <- data * !binary_data
+    }
+  } else {
+    if (is.matrix(data)) {
+      if (length(thresholds) == 1) thresholds <- rep(thresholds, ncol(data))
+      assertthat::assert_that(
+        assertthat::are_equal(length(thresholds), ncol(data))
+      )
+      binary_data <- t(apply(abs(data), 1, ">", thresholds))
+      binary_data[is.na(binary_data)] <- F
+      filtered_data <- data * !binary_data
+    } else {
+      stop("`data` should be a matrix or a vector.")
+    }
+  }
+
+  return(list(data = filtered_data, filter = binary_data))
+}
