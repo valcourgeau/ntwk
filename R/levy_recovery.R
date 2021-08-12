@@ -134,14 +134,13 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
   data <- apply(data, 2, cumsum)
   # data are increments
   n_data <- nrow(data)
-  abs_data <- abs(data)
-
-  dt_fltrd <- data_filtering(data, thresholds)
-  filter_jumps <- dt_fltrd$filter
-  filter_data <- dt_fltrd$data
+  data_filtered_whole <- data_filtering(data, thresholds)
+  filter_jumps <- data_filtered_whole$filter
+  filter_data <- data_filtered_whole$data
 
   # Realised variance - cts
-  rv_c <- (t(filter_data) %*% filter_data)
+  centered_filter_data <- apply(filter_data, 2, function(x) x - mean(x[x != 0]))
+  rv_c <- (t(abs(centered_filter_data)) %*% abs(centered_filter_data))
   rv_c <- rv_c / (mesh_size * n_data)
 
   if (sum(filter_jumps) > 0) {
@@ -170,7 +169,9 @@ fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
     )
 
     # Realised variance - total
-    rv_total <- (t(abs_data) %*% abs_data) / (mesh_size * n_data)
+    centered_data <- apply(data, 2, function(x) x - mean(x))
+    rv_total <- (t(abs(centered_data)) %*% abs(centered_data))
+    rv_total <- rv_total / (mesh_size * n_data)
 
     # Realised variance - discontinuous
     rv_d <- as.matrix(rv_total - rv_c)
