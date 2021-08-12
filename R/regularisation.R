@@ -30,6 +30,7 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #' @param div Batch size/divisor to avoid large memory allocation.
 #' @param output Output type: either "vector"or "matrix".
 #' @param gamma Adaptive MLE scaling parameter.
+#' @param cut_off Sparsity proportion, defaults to `NA`.
 #' @param use_scaling Brownian motion covariance matrix scaling
 #'     in the likelihood.
 #' @return Regularised dynamics matrix.
@@ -48,12 +49,14 @@ get_reg_fn <- function(reg, mle = NA, gamma = NA) {
 #' @export
 grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
                                 reg = "l1", div = 1e5, output = "vector",
-                                gamma = NA, use_scaling = F) {
+                                gamma = NA, cut_off = NA, use_scaling = F) {
   # TODO(val) add warning for lambda
   # TODO(val) add scaling
   # TODO(val) add filtering on levy increments
   assertthat::assert_that(output %in% c("vector", "matrix"))
   assertthat::assert_that(is.na(lambda) | lambda >= 0.0)
+  assertthat::assert_that(is.na(cut_off) | cut_off >= 0.0 | cut_off <= 1.)
+
 
   n_nodes <- ncol(data)
   mle_value <- grou_mle(
@@ -76,14 +79,13 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
   }
 
   reg_fn <- get_reg_fn(reg, mle_value, gamma)
+  components <- node_mle_components(
+    times = times, data = data, thresholds = thresholds,
+    div = div, output = "vector"
+  )
   fn_optim <- function(adj_vector) {
     # Compute the penalised log-likelihood
     adj <- matrix(adj_vector, n_nodes, n_nodes)
-    components <- node_mle_components(
-      times = times, data = data, thresholds = thresholds,
-      div = div, output = "vector"
-    )
-
     to_maximise <- c(
       sum(
         adj_vector
@@ -108,6 +110,10 @@ grou_regularisation <- function(times, data, thresholds = NA, lambda = NA,
 
   reg_optim <- optim(par = mle_value, fn = fn_optim, method = "BFGS")
   reg_vector <- reg_optim$par
+  if (!is.na(cut_off)) {
+    reg_vector[abs(reg_vector) < quantile(abs(reg_vector), cut_off)] <- 0
+  }
+
   if (output == "vector") {
     return(reg_vector)
   } else {

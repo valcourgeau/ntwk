@@ -48,7 +48,7 @@ testthat::test_that("get_reg_fn__type", {
 
 
 testthat::test_that("grou_regularisation__shape", {
-  set.seed(45)
+  set.seed(23)
   n <- 10000
   d <- 4
   adj_test <- diag(d)
@@ -73,7 +73,7 @@ testthat::test_that("grou_regularisation__shape", {
     lambda = 10,
     reg = "l1",
     output = "matrix",
-    gamma = 3, use_scaling = T
+    gamma = 3, use_scaling = T, cut_off = .65
   )
   testthat::expect_equal(dim(reg_adj), c(d, d))
 
@@ -81,11 +81,11 @@ testthat::test_that("grou_regularisation__shape", {
     times = times, data = path, thresholds = NA,
     mode = "node", output = "matrix"
   )
-
   testthat::expect_equal(
     mean(reg_adj[adj_test > 0] / adj_test[adj_test > 0]),
     1.0,
-    tolerance = 0.15
+    tolerance = .11
   )
+
   testthat::expect_equal(reg_adj, adj_test, tolerance = .2)
 })
