@@ -82,6 +82,26 @@ test_that("correlated_brownian_noise__n_jumps_higher", {
   testthat::expect_equal(dim(cmpnd_poisson$jump_times), c(n, d))
 })
 
+test_that("correlated_brownian_noise__corr_structure", {
+  set.seed(42)
+  n <- 10000
+  d <- 10
+  dd <- 2 * diag(d)
+  dd[2, 1] <- -1
+  dd[1, 2] <- -1
+  dd[3, 1] <- -1
+  dd[1, 3] <- -1
+  delta_time <- 0.01
+  corr_bm <- correlated_brownian_noise(
+    sigma_matrix = dd, n = n, delta_time = delta_time
+  )
+  testthat::expect_equal(
+    cov(corr_bm)[1:5, 1:5] / delta_time,
+    cov(mvtnorm::rmvnorm(n, sigma = dd))[1:5, 1:5],
+    tolerance = 0.05
+  )
+})
+
 test_that("compound_poisson_jumps__unidimensional", {
   set.seed(42)
   n <- 10
@@ -129,7 +149,9 @@ test_that("correlated_jumps__shape", {
   delta_time <- 0.001
   n_jumps <- 1000
   corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
-  corr_jumps <- correlated_jumps(n, corr_mat, delta_time)
+  corr_jumps <- correlated_jumps(
+    n = n, sigma = corr_mat, delta_time = delta_time
+  )
 
   testthat::expect_equal(dim(corr_jumps), c(n, d))
 })
@@ -139,14 +161,13 @@ test_that("bm_compound_poisson__shape", {
   n <- 1000
   d <- 3
   delta_time <- 0.001
-  n_jumps <- 1000
   corr_mat <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
-  corr_jumps <- correlated_jumps(n, corr_mat, delta_time)
   lapply(
     c(0, 1, 10, 100, 1000),
     function(n_j) {
       bm_cp <- bm_compound_poisson(
-        n = n, corr_mat, diag(d), n_jumps = n_j, delta_time = delta_time
+        n = n, sigma = corr_mat, jump_sigma = diag(d),
+        n_jumps = n_j, delta_time = delta_time
       )
       testthat::expect_equal(dim(bm_cp), c(n, d))
     }

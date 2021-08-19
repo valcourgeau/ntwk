@@ -4,12 +4,12 @@
 \alias{correlated_brownian_noise}
 \title{Generates multidimensional correlated Brownian motion increments}
 \usage{
-correlated_brownian_noise(sigma_matrix, n, delta_time)
+correlated_brownian_noise(n, sigma_matrix, delta_time)
 }
 \arguments{
-\item{sigma_matrix}{Correlation/Covariance matrix}
-
 \item{n}{Sample length}
+
+\item{sigma_matrix}{Correlation/Covariance matrix}
 
 \item{delta_time}{Time difference between steps}
 }

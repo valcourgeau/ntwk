@@ -6,6 +6,7 @@
 #' @return A matrix based on `adj` with zero diagonals
 #'     and off-diagonal elements sum to one.
 #' @example row_normalised(matrix(1, 5, 5))
+#' @export
 row_normalised <- function(adj, keep_values = F) {
   # zero on diag, row sum to 1 with positive weights
 
@@ -105,7 +106,7 @@ augmented_diag <- function(d, offset) {
 #' # No filtering
 #' data_filtering(data)
 #'
-#' # Filtering any below the 50% quantile
+#' # Filtering everything
 #' data_filtering(data, 0.0)
 #' data_filtering(data, rep(0.0, d))
 #'

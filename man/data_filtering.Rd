@@ -32,7 +32,7 @@ data <- matrix(rnorm(n * d), ncol = d)
 # No filtering
 data_filtering(data)
 
-# Filtering any below the 50\% quantile
+# Filtering everything
 data_filtering(data, 0.0)
 data_filtering(data, rep(0.0, d))
 

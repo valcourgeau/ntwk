@@ -13,7 +13,7 @@ testthat::test_that("get_reg_fn__type", {
 
   reg_fn <- get_reg_fn("l2")
   x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
-  testthat::expect_equal(reg_fn(x), sum(x^2))
+  testthat::expect_equal(reg_fn(x), sqrt(sum(x^2)))
 
   beta_value <- 0.4999
   delta_time <- 0.1

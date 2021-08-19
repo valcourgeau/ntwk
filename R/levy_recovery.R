@@ -122,6 +122,7 @@ fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
 #' @param data Data to fit (increments).
 #' @param mesh_size Time difference of data.
 #' @param thresholds Jump thresholds (Defaults to `NA`, no filtering).
+#' @param jump_quantile Quantile above which a data vector is a jump.
 #' @return List of fitted Generalised Hyperbolic distribution.
 #' @examples
 #' n <- 10000
@@ -130,69 +131,70 @@ fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
 #' fit_bm_compound_poisson(data = data, mesh_size = delta_time)
 #' @importFrom stats optim
 #' @export
-fit_bm_compound_poisson <- function(data, mesh_size, thresholds = NA) {
-  data <- apply(data, 2, cumsum)
+fit_bm_compound_poisson <- function(data, mesh_size,
+                                    thresholds = NA, jump_quantile = 0.9) {
   # data are increments
   n_data <- nrow(data)
   data_filtered_whole <- data_filtering(data, thresholds)
   filter_jumps <- data_filtered_whole$filter
   filter_data <- data_filtered_whole$data
+  data_l2 <- apply(data, 1, function(x) {
+    sqrt(sum(x * x))
+  })
+  jump_cutoff <- quantile(data_l2, jump_quantile)
 
   # Realised variance - cts
-  centered_filter_data <- apply(filter_data, 2, function(x) x - mean(x[x != 0]))
-  rv_c <- (t(abs(centered_filter_data)) %*% abs(centered_filter_data))
-  rv_c <- rv_c / (mesh_size * n_data)
+  rm_filter_data <- filter_data
+  rm_filter_data[data_l2 > jump_cutoff, ] <- NA
+  rv_c <- cov(rm_filter_data, use = "complete.obs") / mesh_size
 
   if (sum(filter_jumps) > 0) {
-    jumps_dt <- apply(filter_jumps, 2, function(x) {
-      diff(which(as.numeric(x) == 1)) * mesh_size
-    })
-    jumps_n <- lapply(jumps_dt, length)
-    jumps_fn_optim <- lapply(
-      jumps_dt,
-      function(times) {
-        function(log_lambda) {
-          prob_no_jump <- exp(-exp(log_lambda))
-          loglik_1 <- sum(log(1.0 - exp(-exp(log_lambda) * times)))
-          loglik_2 <- log(prob_no_jump) * (n_data * mesh_size - sum(times))
-          loglik <- loglik_1 + loglik_2
-          return(-loglik)
-        }
+    jumps_n <- apply(filter_jumps, 2, sum)
+
+    likelihood_poisson <- function(n_jump) {
+      function(log_lambda) {
+        loglik <- n_jump * log_lambda - exp(log_lambda) * mesh_size * n_data
+        return(-loglik)
       }
-    )
+    }
+    jumps_fn_optim <- lapply(jumps_n, likelihood_poisson)
     poisson_intensities <- lapply(jumps_fn_optim, function(fn_optim) {
       exp(optim(par = c(-1), fn = fn_optim, method = "BFGS")$par)
     })
     poisson_intensities <- do.call(c, poisson_intensities)
-    filtered_delta_data <- apply(
-      filtered_delta_data, 2, function(x) x - mean(x[x != 0])
+
+    # synchronised / unique jumps
+    n_unique_jumps <- sum(data_l2 > jump_cutoff)
+    poisson_unique <- exp(
+      optim(
+        par = c(-1),
+        fn = likelihood_poisson(n_unique_jumps),
+        method = "BFGS"
+      )$par
     )
 
     # Realised variance - total
-    centered_data <- apply(data, 2, function(x) x - mean(x))
-    rv_total <- (t(abs(centered_data)) %*% abs(centered_data))
-    rv_total <- rv_total / (mesh_size * n_data)
+    rv_total <- cov(data) / mesh_size
 
     # Realised variance - discontinuous
     rv_d <- as.matrix(rv_total - rv_c)
-    jump_sigma <- t(t(rv_d) / (poisson_intensities))
-
+    jump_sigma <- t(t(rv_d) / poisson_unique)
     jump_sigma <- as.matrix(Matrix::nearPD(jump_sigma, corr = FALSE)$mat)
-    return(
-      list(
-        sigma = rv_c, poisson = poisson_intensities,
-        jump_sigma = jump_sigma, n_jumps = jumps_n
-      )
-    )
+
+    # Fit ghyp only on jumps
+    ghyp <- fit_ghyp_diffusion(data[abs(data_l2) > jump_cutoff, ])
   } else {
     poisson_intensities <- NA
+    poisson_unique <- NA
     jump_sigma <- NA
-    n_jumps <- NA
+    jumps_n <- NA
+    ghyp <- NA
   }
   return(
     list(
-      sigma = rv_c, poisson = poisson_intensities,
-      jump_sigma = jump_sigma, n_jumps = n_jumps
+      "sigma" = rv_c, "jump_sigma" = jump_sigma, "n_jumps" = jumps_n,
+      "poisson" = poisson_intensities, "poisson_unique" = poisson_unique,
+      "ghyp" = ghyp
     )
   )
 }

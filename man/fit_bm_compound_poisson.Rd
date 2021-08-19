@@ -4,7 +4,7 @@
 \alias{fit_bm_compound_poisson}
 \title{Fit Brownian motion mixture with Gaussian jumps.}
 \usage{
-fit_bm_compound_poisson(data, mesh_size, thresholds = NA)
+fit_bm_compound_poisson(data, mesh_size, thresholds = NA, jump_quantile = 0.9)
 }
 \arguments{
 \item{data}{Data to fit (increments).}
@@ -12,6 +12,8 @@ fit_bm_compound_poisson(data, mesh_size, thresholds = NA)
 \item{mesh_size}{Time difference of data.}
 
 \item{thresholds}{Jump thresholds (Defaults to \code{NA}, no filtering).}
+
+\item{jump_quantile}{Quantile above which a data vector is a jump.}
 }
 \value{
 List of fitted Generalised Hyperbolic distribution.
