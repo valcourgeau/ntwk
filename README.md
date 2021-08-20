@@ -10,7 +10,8 @@
 <!-- badges: end -->
 
 The goal of ntwk is to provide functions for the statistical modelling
-of network time series.
+of network time series, especially with irregularly-spaced data and a
+Lévy-type driving noise.
 
 ## Installation
 
@@ -35,32 +36,22 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(ntwk)
-## basic example code
+
+n <- 1000
+d <- 5
+theta_1 <- 1
+theta_2 <- 2
+mesh_size <- 0.01
+# Generate a path
+times <- seq_len(n)
+noise <- matrix(rnorm(d * n, mean = 0, sd = sqrt(mesh_size)), ncol = d)
+adj <- polymer_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+path <- construct_path(
+  nw_topo = adj, noise = noise, y_init = rep(0, d), delta_time = mesh_size
+)
+
+# Fits the Theta-GrOU (2 parameters) process
+fit <- grou_mle(times = times, data = path, mode = "network")
+print(fit)
+#> [1] 0.02660625 0.02290184
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.

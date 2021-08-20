@@ -19,6 +19,7 @@ Imports:
     assertthat (>= 0.2.1),
     copCAR,
     ghyp,
+    knitr,
     Matrix,
     mvtnorm,
     pracma,
