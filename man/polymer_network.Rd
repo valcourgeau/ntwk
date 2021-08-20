@@ -22,3 +22,9 @@ Adjacency matrix of a graph with max degree two and minimum one.
 \description{
 Creates adjacency matrix with min degree one and max degree two.
 }
+\examples{
+d <- 10
+theta_2 <- 2
+theta_1 <- 1
+polymer_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+}

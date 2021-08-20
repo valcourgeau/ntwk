@@ -24,3 +24,14 @@ of the cleaning and their standard deviations.
 \description{
 Clean data using STL / Loess function.
 }
+\examples{
+n <- 1000
+d <- 3
+delta_time <- 0.01
+data <- matrix(
+  rnorm(n = n * d, mean = 0, sd = sqrt(delta_time)),
+  ncol = d
+)
+data <- apply(data, 2, cumsum)
+clean_data(data)
+}

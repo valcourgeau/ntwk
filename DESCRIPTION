@@ -15,18 +15,35 @@ Description: It provides statistical inference tools for network time
 License: MIT + file LICENSE
 Imports:
     assertthat (>= 0.2.1),
+    colorspace,
     copCAR,
+    corrplot,
+    cplm,
+    data.table,
+    doParallel,
+    foreach,
+    ggplot2,
     ghyp,
+    gplots,
+    gridExtra,
     igraph,
-    knitr,
+    JumpTest,
+    magrittr,
+    MASS,
     Matrix,
     mvtnorm,
     pracma,
-    rmarkdown,
-    zoo
-Suggests: 
+    raster,
+    RColorBrewer,
+    Rcpp,
+    rlist,
+    scales,
     stats,
-    testthat (>= 3.0.0)
+    stringr,
+    testthat (>= 3.0.0),
+    tseries,
+    viridis,
+    zoo
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true

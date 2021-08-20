@@ -11,7 +11,7 @@ row_normalised(adj, keep_values = F)
 \item{adj}{Adjacency matrix to normalise}
 
 \item{keep_values}{Whether to keep off-diagonal values
-or normalise fully (default).}
+or normalise fully (defaults to \code{FALSE}).}
 }
 \value{
 A matrix based on \code{adj} with zero diagonals
@@ -20,4 +20,9 @@ and off-diagonal elements sum to one.
 \description{
 Normalise a square matrix by dividing elements by the sum of
 off-diagonal entries row-wise. Note: sets diagonal to zero.
+}
+\examples{
+d <- 5
+adj <- matrix(1, d, d)
+row_normalised(adj)
 }

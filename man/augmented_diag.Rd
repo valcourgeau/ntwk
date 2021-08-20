@@ -17,3 +17,8 @@ A matrix with an offset diagonal of ones.
 \description{
 Returns an offset diagonal matrix.
 }
+\examples{
+d <- 10
+offset <- 1
+augmented_diag(d, offset) # zeroes everywhere except 1s on the +1 diag
+}

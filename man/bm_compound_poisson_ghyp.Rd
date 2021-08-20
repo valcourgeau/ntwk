@@ -27,10 +27,11 @@ correlated but unsynchronised GHYP jumps.
 }
 \examples{
 n <- 1000
+d <- 3
 sigma <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
 jump_sigma <- sigma
 n_jumps <- 50
 delta_time <- 0.5
-ghyp_distr <- ghyp::ghyp()
+ghyp_distr <- ghyp::ghyp(mu = rep(0, d))
 bm_compound_poisson_ghyp(n, sigma, ghyp_distr, n_jumps, delta_time)
 }

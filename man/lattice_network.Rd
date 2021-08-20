@@ -19,3 +19,9 @@ to the upper triangular matrix.}
 \description{
 Lattice/grid-like network with max degree of four across all nodes.
 }
+\examples{
+d <- 10
+theta_2 <- 2
+theta_1 <- 1
+lattice_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+}

@@ -2,10 +2,13 @@
 #' off-diagonal entries row-wise. Note: sets diagonal to zero.
 #' @param adj Adjacency matrix to normalise
 #' @param keep_values Whether to keep off-diagonal values
-#'     or normalise fully (default).
+#'     or normalise fully (defaults to `FALSE`).
 #' @return A matrix based on `adj` with zero diagonals
 #'     and off-diagonal elements sum to one.
-#' @example row_normalised(matrix(1, 5, 5))
+#' @examples
+#' d <- 5
+#' adj <- matrix(1, d, d)
+#' row_normalised(adj)
 #' @export
 row_normalised <- function(adj, keep_values = F) {
   # zero on diag, row sum to 1 with positive weights
@@ -22,7 +25,11 @@ row_normalised <- function(adj, keep_values = F) {
 #' @param n number of times to concatenate (number of columns)
 #' @return A matrix where `col_vec` is concatenated
 #'     `n` times along the column axis.
-#' @example concatenate_col(seq(10), 5) # (10, 5) matrix created
+#' @examples
+#' vec_to_concat <- seq(10)
+#' n <- 5
+#' concatenate_col(vec_to_concat, n) # (10, 5) matrix created
+#' @export
 concatenate_col <- function(col_vec, n) {
   return(matrix(rep(col_vec, n), ncol = n))
 }
@@ -35,7 +42,17 @@ concatenate_col <- function(col_vec, n) {
 #' @param ... additional inputs given to stats::stl
 #' @return List with the cleaned time series, the remainders
 #'     of the cleaning and their standard deviations.
-#' @importFrom stats stl
+#' @examples
+#' n <- 1000
+#' d <- 3
+#' delta_time <- 0.01
+#' data <- matrix(
+#'   rnorm(n = n * d, mean = 0, sd = sqrt(delta_time)),
+#'   ncol = d
+#' )
+#' data <- apply(data, 2, cumsum)
+#' clean_data(data)
+#' @importFrom stats stl rnorm
 #' @export
 clean_data <- function(data, frequency = 24,
                        s_window = 24, t_window = 24, ...) {
@@ -68,7 +85,10 @@ clean_data <- function(data, frequency = 24,
 #' @param d Matrix dimensional (square matrix)
 #' @param offset Offset from the diagonal
 #' @return A matrix with an offset diagonal of ones.
-#' @example augmented_diag(10, 1) # zeroes everywhere except 1s on the +1 diag
+#' @examples
+#' d <- 10
+#' offset <- 1
+#' augmented_diag(d, offset) # zeroes everywhere except 1s on the +1 diag
 #' @export
 augmented_diag <- function(d, offset) {
   assertthat::assert_that(d > offset)

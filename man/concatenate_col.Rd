@@ -18,3 +18,8 @@ A matrix where \code{col_vec} is concatenated
 \description{
 Concatenate \code{col_vec} columnwise \code{n} times
 }
+\examples{
+vec_to_concat <- seq(10)
+n <- 5
+concatenate_col(vec_to_concat, n) # (10, 5) matrix created
+}

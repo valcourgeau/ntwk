@@ -19,3 +19,9 @@ adjacency matrix of a graph with max degree zero.
 \description{
 Creates adjacency matrix with max degree zero.
 }
+\examples{
+d <- 10
+theta_2 <- 2
+theta_1 <- 1
+isolated_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+}

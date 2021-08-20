@@ -19,3 +19,9 @@ to the upper triangular matrix.}
 \description{
 Fully-connected graph.
 }
+\examples{
+d <- 10
+theta_2 <- 2
+theta_1 <- 1
+fully_connected_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+}

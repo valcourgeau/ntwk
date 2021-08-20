@@ -18,7 +18,11 @@ check_thetas <- function(theta_1, theta_2) {
 #' @param theta_1 Off-diagonal value or network effect.
 #' @param theta_2 Diagonal value or momentum effect.
 #' @return adjacency matrix of a graph with max degree zero.
-#' @example isolated_network(d=10)
+#' @examples
+#' d <- 10
+#' theta_2 <- 2
+#' theta_1 <- 1
+#' isolated_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
 #' @export
 isolated_network <- function(d, theta_1, theta_2) {
   # theta_2 is the diagonal element
@@ -32,7 +36,11 @@ isolated_network <- function(d, theta_1, theta_2) {
 #' @param directed Boolean if lower triangular is the opposite
 #'     to the upper triangular matrix.
 #' @return Adjacency matrix of a graph with max degree two and minimum one.
-#' @example polymer_network(d=10)
+#' @examples
+#' d <- 10
+#' theta_2 <- 2
+#' theta_1 <- 1
+#' polymer_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
 #' @export
 polymer_network <- function(d, theta_1, theta_2, directed = F) {
   check_thetas(theta_1, theta_2)
@@ -52,7 +60,11 @@ polymer_network <- function(d, theta_1, theta_2, directed = F) {
 #' @param theta_2 Diagonal value or momentum effect.
 #' @param directed Boolean if lower triangular is the opposite
 #'     to the upper triangular matrix.
-#' @example lattice_network(10, theta_1 = 1, theta_2 = 2)
+#' @examples
+#' d <- 10
+#' theta_2 <- 2
+#' theta_1 <- 1
+#' lattice_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
 #' @importFrom copCAR adjacency.matrix
 #' @export
 lattice_network <- function(d, theta_1, theta_2, directed = F) {
@@ -91,7 +103,11 @@ lattice_network <- function(d, theta_1, theta_2, directed = F) {
 #' @param theta_2 Diagonal value or momentum effect.
 #' @param directed Boolean if lower triangular is the opposite
 #'     to the upper triangular matrix.
-#' @example fully_connected_network(10, 1, 2)
+#' @examples
+#' d <- 10
+#' theta_2 <- 2
+#' theta_1 <- 1
+#' fully_connected_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
 #' @export
 fully_connected_network <- function(d, theta_1, theta_2, directed = F) {
   net_temp <- matrix(1, d, d)

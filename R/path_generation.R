@@ -194,17 +194,18 @@ bm_compound_poisson <- function(n, sigma, jump_sigma,
 #' @importFrom ghyp rghyp
 #' @examples
 #' n <- 1000
+#' d <- 3
 #' sigma <- matrix(c(1.0, 0.2, 0.2, 0.2, 1.0, 0.2, 0.2, 0.2, 1.0), 3, 3)
 #' jump_sigma <- sigma
 #' n_jumps <- 50
 #' delta_time <- 0.5
-#' ghyp_distr <- ghyp::ghyp()
+#' ghyp_distr <- ghyp::ghyp(mu = rep(0, d))
 #' bm_compound_poisson_ghyp(n, sigma, ghyp_distr, n_jumps, delta_time)
 #' @export
 bm_compound_poisson_ghyp <- function(n, sigma, ghyp_distr,
                                      n_jumps, delta_time) {
   d <- ncol(sigma)
-  jump_vals <- ghyp::rghyp(n_jumps, ghyp_distr)
+  jump_vals <- ghyp::rghyp(n = n_jumps, object = ghyp_distr)
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time,
     jump_values = jump_vals, synchronised = T
