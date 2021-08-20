@@ -32,7 +32,8 @@ devtools::install_github("valcourgeau/ntwk")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example of the GrOU 2-parameter MLE after constructing a
+sample path driven by a Brownian motion:
 
 ``` r
 library(ntwk)
