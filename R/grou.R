@@ -119,8 +119,7 @@ node_mle_components <- function(times, data, thresholds, div = 1e5,
     FUN = function(i) {
       idx_couple <- idx[i]:(idx[i + 1] - 1)
       core_node_mle(
-        times = times[idx_couple],
-        data = data[idx_couple, ],
+        times = times[idx_couple], data = data[idx_couple, ],
         thresholds = thresholds
       )
     }

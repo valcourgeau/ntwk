@@ -38,13 +38,15 @@ n <- 1000
 d <- 10
 times <- seq(n)
 delta_time <- 0.01
+beta_value <- 0.499
 noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
 data <- construct_path(
   diag(d),
   noise = noise, y_init = rep(0, d), delta_time = delta_time
 )
-loglik <- grad_likelihood_fn(
-  times = times, data = data, div = 1e2
+thresholds <- rep(delta_time^beta_value, d)
+grad_loglik <- grad_likelihood_fn(
+  times = times, data = data, thresholds = thresholds, div = 1e2
 )
-loglik(diag(d))
+grad_loglik(diag(d))
 }

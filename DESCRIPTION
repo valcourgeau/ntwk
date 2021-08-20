@@ -1,6 +1,6 @@
 Package: ntwk
 Title: Statistical Inference for Network Time Series
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: 
     person(given = "Valentin",
            family = "Courgeau",
@@ -15,34 +15,16 @@ Description: It provides statistical inference tools for network time
 License: MIT + file LICENSE
 Imports:
     assertthat (>= 0.2.1),
-    colorspace,
     copCAR,
-    corrplot,
-    cplm,
-    data.table,
-    doParallel,
-    foreach,
-    ggplot2,
     ghyp,
-    gplots,
-    gridExtra,
     igraph,
-    JumpTest,
-    magrittr,
-    MASS,
     Matrix,
     mvtnorm,
     pracma,
-    raster,
-    RColorBrewer,
     Rcpp,
-    rlist,
-    scales,
     stats,
-    stringr,
     testthat (>= 3.0.0),
     tseries,
-    viridis,
     zoo
 Config/testthat/edition: 3
 Encoding: UTF-8

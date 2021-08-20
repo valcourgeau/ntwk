@@ -57,5 +57,7 @@ data <- construct_path(
   diag(d),
   noise = noise, y_init = rep(0, d), delta_time = delta_time
 )
-grou_regularisation(times = times, data = data, lambda = 1, div = 1e2)
+\donttest{
+    grou_regularisation(times = times, data = data, lambda = 1, div = 1e2)
+}
 }

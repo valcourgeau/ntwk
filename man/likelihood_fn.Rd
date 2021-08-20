@@ -50,13 +50,17 @@ n <- 1000
 d <- 10
 times <- seq(n)
 delta_time <- 0.01
+beta_value <- 0.499
 noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
 data <- construct_path(
   diag(d),
   noise = noise, y_init = rep(0, d), delta_time = delta_time
 )
+thresholds <- rep(delta_time^beta_value, d)
 loglik <- likelihood_fn(
-  times = times, data = data, lambda = 1, div = 1e2
+  times = times, data = data,
+  thresholds=thresholds,
+  lambda = 1, div = 1e2
 )
 loglik(diag(d))
 }

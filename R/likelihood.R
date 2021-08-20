@@ -17,13 +17,17 @@
 #' d <- 10
 #' times <- seq(n)
 #' delta_time <- 0.01
+#' beta_value <- 0.499
 #' noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
 #' data <- construct_path(
 #'   diag(d),
 #'   noise = noise, y_init = rep(0, d), delta_time = delta_time
 #' )
+#' thresholds <- rep(delta_time^beta_value, d)
 #' loglik <- likelihood_fn(
-#'   times = times, data = data, lambda = 1, div = 1e2
+#'   times = times, data = data,
+#'   thresholds = thresholds,
+#'   lambda = 1, div = 1e2
 #' )
 #' loglik(diag(d))
 #' @export
@@ -60,6 +64,7 @@ likelihood_fn <- function(times, data, thresholds, lambda = NA,
   )
   fn_optim <- function(adj_vector) {
     # Compute the penalised log-likelihood
+    adj_vector <- c(adj_vector)
     adj <- matrix(adj_vector, n_nodes, n_nodes)
     to_maximise <- c(
       sum(
@@ -100,15 +105,17 @@ likelihood_fn <- function(times, data, thresholds, lambda = NA,
 #' d <- 10
 #' times <- seq(n)
 #' delta_time <- 0.01
+#' beta_value <- 0.499
 #' noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
 #' data <- construct_path(
 #'   diag(d),
 #'   noise = noise, y_init = rep(0, d), delta_time = delta_time
 #' )
-#' loglik <- grad_likelihood_fn(
-#'   times = times, data = data, div = 1e2
+#' thresholds <- rep(delta_time^beta_value, d)
+#' grad_loglik <- grad_likelihood_fn(
+#'   times = times, data = data, thresholds = thresholds, div = 1e2
 #' )
-#' loglik(diag(d))
+#' grad_loglik(diag(d))
 #' @export
 grad_likelihood_fn <- function(times, data, thresholds, div = 1e5,
                                use_scaling = F, log = T) {
@@ -138,6 +145,7 @@ grad_likelihood_fn <- function(times, data, thresholds, div = 1e5,
   )
   fn_optim <- function(adj_vector) {
     # Compute the gradient of the log-likelihood
+    adj_vector <- as.vector(adj_vector)
     grad_val <- kronecker(
       Matrix::Diagonal(n_nodes), inv_scaling_matrix
     ) %*% as.vector(t(components$numerator))
