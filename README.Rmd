@@ -42,21 +42,24 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(ntwk)
-
-n <- 1000
+set.seed(1)
+n <- 10000
 d <- 5
 theta_1 <- 1
 theta_2 <- 2
 mesh_size <- 0.01
-# Generate a path
-times <- seq_len(n)
-noise <- matrix(rnorm(d * n, mean = 0, sd = sqrt(mesh_size)), ncol = d)
+
+# Generate a graph adjacency matrix
 adj <- polymer_network(d = d, theta_1 = theta_1, theta_2 = theta_2)
+
+# Generate a path
+times <- seq(from = 0, by = mesh_size, length.out = n) # time grid
+noise <- matrix(rnorm(d * n, mean = 0, sd = sqrt(mesh_size)), ncol = d)
 path <- construct_path(
   nw_topo = adj, noise = noise, y_init = rep(0, d), delta_time = mesh_size
 )
 
 # Fits the Theta-GrOU (2 parameters) process
 fit <- grou_mle(times = times, data = path, mode = "network")
-print(fit)
+print(fit) # should be c(theta_1, theta_2) = c(1, 2)
 ```
