@@ -6,3 +6,4 @@
 ^LICENSE\.md
 /dev/
 /R/tmp/
+^cran-comments\.md$
