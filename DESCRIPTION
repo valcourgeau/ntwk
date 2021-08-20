@@ -8,10 +8,12 @@ Authors@R:
            email = "val.courgeau@gmail.com",
            comment = c(ORCID = "0000-0002-7423-0090"))
 Description: It provides statistical inference tools for network time
-    series, including implementation of the Graph OU (GrOU) model, sparse
-    AR-like regression on irregularly-spaced data. It also handles jumps
-    and Lévy-type driving noises through Wiener-Poisson mixtures and
-    Generalised Hyperbolic distributions.
+    series, including implementation of the Graph OU (GrOU) model and
+    sparse AR-like regression on irregularly-spaced data (Courgeau and
+    Veraart (2020) <arXiv:2005.12720>; Courgeau and Veraart
+    <arXiv:2008.10930>).  It also handles jumps and Lévy-type driving
+    noises through Wiener-Poisson mixtures and Generalised Hyperbolic
+    distributions.
 License: MIT + file LICENSE
 Imports:
     assertthat (>= 0.2.1),
@@ -26,8 +28,11 @@ Imports:
     testthat (>= 3.0.0),
     tseries,
     zoo
+Suggests: 
+    spelling
 Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

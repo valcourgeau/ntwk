@@ -59,7 +59,7 @@ data <- construct_path(
 thresholds <- rep(delta_time^beta_value, d)
 loglik <- likelihood_fn(
   times = times, data = data,
-  thresholds=thresholds,
+  thresholds = thresholds,
   lambda = 1, div = 1e2
 )
 loglik(diag(d))
