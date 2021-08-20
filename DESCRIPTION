@@ -27,6 +27,7 @@ Imports:
     zoo
 Suggests: 
     igraph,
+    rmarkdown,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
