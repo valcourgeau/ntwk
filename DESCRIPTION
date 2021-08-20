@@ -4,7 +4,7 @@ Version: 1.0.0
 Authors@R: 
     person(given = "Valentin",
            family = "Courgeau",
-           role = c("aut", "cre"),
+           role = c("aut", "cre", "cph"),
            email = "val.courgeau@gmail.com",
            comment = c(ORCID = "0000-0002-7423-0090"))
 Description: It provides statistical inference tools for network time
@@ -33,6 +33,6 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
