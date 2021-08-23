@@ -45,6 +45,7 @@ construct_path <- function(nw_topo, noise, y_init, delta_time) {
 #' @importFrom mvtnorm rmvnorm
 #' @export
 correlated_brownian_noise <- function(n, sigma_matrix, delta_time) {
+  assertthat::assert_that(is.matrix(sigma_matrix))
   assertthat::assert_that(ncol(sigma_matrix) > 1)
   return(mvtnorm::rmvnorm(n = n, sigma = sigma_matrix) * sqrt(delta_time))
 }
@@ -75,13 +76,12 @@ compound_poisson_jumps <- function(d, n, delta_time,
     jump_times_tmp <- sort(jump_times_tmp)
     time_grid <- seq(0, to = delta_time * n, by = delta_time)
     idx_jump_injection <- vapply(
-      X = jump_times_tmp,
+      X = jump_times_tmp, FUN.VALUE = 3,
       FUN = function(jump_time) {
         pmin(which.max(jump_time < time_grid), n)
-      },
-      FUN.VALUE = 3
+      }
     )
-    jump_value_idx <- 1
+
     assertthat::assert_that(
       assertthat::are_equal(nrow(jump_values), length(idx_jump_injection))
     )
@@ -122,10 +122,13 @@ compound_poisson_jumps <- function(d, n, delta_time,
         jump_value_idx <- jump_value_idx + 1
       }
     }
-    assertthat::assert_that(
-      assertthat::are_equal(dim(results), c(n, d))
-    )
+    assertthat::assert_that(assertthat::are_equal(dim(results), c(n, d)))
     jump_times <- do.call(cbind, jump_times_collection)
+  }
+
+  if (d == 1) {
+    results <- as.vector(results)
+    jump_times <- as.vector(jump_times)
   }
 
   return(
@@ -137,11 +140,9 @@ compound_poisson_jumps <- function(d, n, delta_time,
 }
 
 correlated_jumps <- function(n, sigma, delta_time) {
-  return(
-    correlated_brownian_noise(
-      sigma_matrix = sigma, n = n, delta_time = delta_time
-    )
-  )
+  return(correlated_brownian_noise(
+    sigma_matrix = sigma, n = n, delta_time = delta_time
+  ))
 }
 
 
@@ -205,7 +206,11 @@ bm_compound_poisson <- function(n, sigma, jump_sigma,
 bm_compound_poisson_ghyp <- function(n, sigma, ghyp_distr,
                                      n_jumps, delta_time) {
   d <- ncol(sigma)
-  jump_vals <- ghyp::rghyp(n = n_jumps, object = ghyp_distr)
+  if (n_jumps > 0) {
+    jump_vals <- ghyp::rghyp(n = n_jumps, object = ghyp_distr)
+  } else {
+    jump_vals <- NA
+  }
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time,
     jump_values = jump_vals, synchronised = T
