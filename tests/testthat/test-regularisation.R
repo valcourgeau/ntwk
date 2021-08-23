@@ -45,6 +45,36 @@ testthat::test_that("get_reg_fn__type", {
   )
 })
 
+testthat::test_that("get_reg_fn__errors", {
+  set.seed(45)
+  n <- 500
+  d <- 4
+  adj_test <- diag(d)
+  adj_test[2, 1] <- 0.5
+  adj_test[3, 1] <- 0.1
+  delta_time <- 0.01
+  y_init <- rep(0, d)
+  times <- seq(0, by = delta_time, length.out = n)
+  noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
+  path <- construct_path(
+    nw_topo = adj_test, noise = noise, y_init = y_init, delta_time = delta_time
+  )
+
+  grou_mle_fit <- grou_mle(
+    times = times, data = path, thresholds = NA,
+    mode = "node", output = "vector"
+  )
+
+  testthat::expect_error(
+    get_reg_fn("adaptive", mle = grou_mle_fit, gamma = NA),
+    regexp = "gamma"
+  )
+  testthat::expect_error(
+    get_reg_fn("adaptive", mle = NA, gamma = NA),
+    regexp = "mle"
+  )
+})
+
 
 testthat::test_that("grou_regularisation__shape", {
   set.seed(23)
@@ -87,4 +117,35 @@ testthat::test_that("grou_regularisation__shape", {
   )
 
   testthat::expect_equal(reg_adj, adj_test, tolerance = .2)
+})
+
+
+testthat::test_that("grou_regularisation__errors", {
+  set.seed(23)
+  n <- 100
+  d <- 4
+  adj_test <- diag(d)
+  adj_test[2, 1] <- 0.5
+  adj_test[3, 1] <- 0.1
+
+  beta_value <- 0.4999
+  delta_time <- 0.1
+  y_init <- rep(0, d)
+
+  times <- seq(0, by = delta_time, length.out = n)
+  noise <- matrix(rnorm(n * d, sd = sqrt(delta_time)), ncol = d)
+  path <- noise
+
+  testthat::expect_error(grou_regularisation(
+    times = times, data = path, thresholds = NA, lambda = 10, reg = "l1",
+    output = "qwe", gamma = 3, use_scaling = T, cut_off = .65
+  ), regexp = "output")
+  testthat::expect_error(grou_regularisation(
+    times = times, data = path, thresholds = NA, lambda = -1, reg = "l1",
+    output = "matrix", gamma = 3, use_scaling = T, cut_off = .65
+  ), regexp = "lambda")
+  testthat::expect_error(grou_regularisation(
+    times = times, data = path, thresholds = NA, lambda = 10, reg = "l1",
+    output = "cut_off", gamma = 3, use_scaling = T, cut_off = -1
+  ))
 })

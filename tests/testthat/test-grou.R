@@ -100,6 +100,37 @@ testthat::test_that("grou_mle__values", {
   testthat::expect_equal(sum(diag(node_mat)) / n_nodes, 1., tolerance = .4)
   testthat::expect_equal(sum(diag(node_mat_long)) / n_nodes, 1., tolerance = .4)
   testthat::expect_equal(node_mat_long, node_mat, tolerance = .2)
+
+  adj_test_na <- adj_test
+  adj_test_na[1, 1] <- NA
+  net_vec_nas <- grou_mle(
+    times = times, data = sample_path,
+    adj = adj_test, div = 1e3, mode = "network", output = "vector"
+  )
+  testthat::expect_equal(net_vec_nas, c(.5, 1.), tolerance = .4)
+})
+
+testthat::test_that("grou_mle__zero_l2", {
+  n_nodes <- 5
+  n_sample <- 5000
+  set.seed(42)
+  adj_test <- diag(n_nodes)
+  mesh_size <- 0.01
+  beta_value <- 0.499
+  sample_path <- construct_path(
+    adj_test,
+    noise = matrix(
+      rnorm(n_sample * n_nodes, 0, 1 * mesh_size^beta_value),
+      ncol = n_nodes
+    ), rep(0, n_nodes), mesh_size
+  )
+  times <- seq(0, by = mesh_size, length.out = n_sample)
+  net_vec <- grou_mle(
+    times = times, data = sample_path,
+    adj = adj_test, div = 1e3, mode = "network", output = "vector"
+  )
+
+  testthat::expect_equal(net_vec, c(0, 1.), tolerance = .4)
 })
 
 testthat::test_that("grou_mle__random_graphs", {
