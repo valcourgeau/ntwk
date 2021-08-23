@@ -1,6 +1,6 @@
 Package: ntwk
 Title: Statistical Inference for Network Time Series
-Version: 1.0.1
+Version: 1.0.0
 Authors@R: 
     person(given = "Valentin",
            family = "Courgeau",

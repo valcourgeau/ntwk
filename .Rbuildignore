@@ -4,6 +4,6 @@
 ^\.pre-commit-config\.yaml$
 ^README\.Rmd$
 ^LICENSE\.md
-/dev/
+dev
 /R/tmp/
 ^cran-comments\.md$
