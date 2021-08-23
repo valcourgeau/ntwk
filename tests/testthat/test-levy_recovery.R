@@ -58,6 +58,35 @@ testthat::test_that("levy_recovery_sparse_adj", {
   )
 })
 
+testthat::test_that("fit_bm_compound_poisson_output", {
+  n <- 5000
+  d <- 10
+  times <- seq(n)
+  delta_time <- 0.01
+
+  noise <- ghyp::rghyp(n, ghyp::ghyp(mu = rep(0, d)))
+  data <- noise
+
+  bm_cp <- fit_bm_compound_poisson(data, delta_time, jump_quantile = 0.5)
+  testthat::expect_equal(dim(bm_cp$sigma), c(d, d))
+  testthat::expect_true(is.na(bm_cp$jump_sigma))
+  testthat::expect_true(is.na(bm_cp$n_jumps))
+  testthat::expect_true(is.na(bm_cp$poisson))
+  testthat::expect_true(is.na(bm_cp$poisson_unique))
+  testthat::expect_true(is.na(bm_cp$ghyp))
+
+  bm_cp <- fit_bm_compound_poisson(
+    data, delta_time,
+    thresholds = rep(0.1, d), jump_quantile = 0.05
+  )
+  testthat::expect_equal(dim(bm_cp$sigma), c(d, d))
+  testthat::expect_equal(dim(bm_cp$jump_sigma), c(d, d))
+  testthat::expect_equal(length(bm_cp$poisson), d)
+  testthat::expect_equal(length(bm_cp$poisson_unique), 1)
+  testthat::expect_true(bm_cp$poisson_unique > 0)
+  testthat::expect_equal(class(bm_cp$ghyp$FULL)[1], "mle.ghyp")
+})
+
 testthat::test_that("fit_ghyp_diffusion_output", {
   n <- 500
   d <- 2
@@ -70,13 +99,16 @@ testthat::test_that("fit_ghyp_diffusion_output", {
     "T" = ghyp::fit.tmv,
     "FULL" = ghyp::fit.ghypmv
   )
+
   ghyp_names <- names(ghyp_model_list)
   set.seed(42)
-  noise <- ghyp::rghyp(n, ghyp::ghyp(mu = rep(0, d)))
 
   lapply(
     seq_len(length(ghyp_names)),
     function(n_pick) {
+      # noise generation
+      noise <- ghyp::rghyp(n, ghyp::ghyp(mu = rep(0, d)))
+
       # pick n model families and fit
       fit_ghyp <- fit_ghyp_diffusion(
         noise,
@@ -89,11 +121,20 @@ testthat::test_that("fit_ghyp_diffusion_output", {
 })
 
 testthat::test_that("fit_ghyp_diffusion_wrong_name", {
-  n <- 5000
+  n <- 1000
   d <- 2
   data <- matrix(rnorm(n * d), ncol = d)
   testthat::expect_error(fit_ghyp_diffusion(data, "Normal", silent = T))
   testthat::expect_error(
     fit_ghyp_diffusion(data, c("NIG", "Normal"), silent = T)
   )
+})
+
+testthat::test_that("bi_power_variation_shapes", {
+  n <- 100
+  d <- 2
+  delta_time <- 0.01
+  data <- matrix(rnorm(n * d), ncol = d)
+  dt <- bi_power_variation(data, delta_time)
+  testthat::expect_equal(dim(dt), c(d, d))
 })
