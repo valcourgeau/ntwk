@@ -43,6 +43,7 @@ construct_path <- function(nw_topo, noise, y_init, delta_time) {
 #'   sigma_matrix = corr_mat, n = n, delta_time = delta_time
 #' )
 #' @importFrom mvtnorm rmvnorm
+#' @importFrom stats runif
 #' @export
 correlated_brownian_noise <- function(n, sigma_matrix, delta_time) {
   assertthat::assert_that(is.matrix(sigma_matrix))

@@ -4,7 +4,7 @@ test_that("fasen__shape", {
   d <- 10
   set.seed(42)
   data <- matrix(
-    data = runif(n * d, -1, 10),
+    data = stats::runif(n * d, -1, 10),
     nrow = n,
     ncol = d
   )

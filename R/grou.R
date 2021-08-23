@@ -45,6 +45,7 @@ core_node_mle <- function(times, data, thresholds = NA) {
 #' @param output String to indicate
 #'     the form of the output: `vector` or `matrix`.
 #' @return Computes the GrOU MLE components.
+#' @importFrom stats sd
 node_mle_components <- function(times, data, thresholds, div = 1e5,
                                 output = "vector") {
   assertthat::assert_that(

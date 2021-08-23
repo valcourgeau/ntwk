@@ -52,7 +52,7 @@ concatenate_col <- function(col_vec, n) {
 #' )
 #' data <- apply(data, 2, cumsum)
 #' clean_data(data)
-#' @importFrom stats stl rnorm
+#' @importFrom stats stl rnorm ts
 #' @export
 clean_data <- function(data, frequency = 24,
                        s_window = 24, t_window = 24, ...) {
