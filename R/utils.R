@@ -91,7 +91,7 @@ clean_data <- function(data, frequency = 24,
 #' augmented_diag(d, offset) # zeroes everywhere except 1s on the +1 diag
 #' @export
 augmented_diag <- function(d, offset) {
-  assertthat::assert_that(d > offset)
+  assertthat::assert_that(d > abs(offset))
 
   mat_temp <- cbind(
     matrix(0, nrow = d, ncol = abs(offset)),
@@ -135,11 +135,10 @@ augmented_diag <- function(d, offset) {
 #' @export
 data_filtering <- function(data, thresholds = NA) {
   assertthat::assert_that(any(c(is.na(thresholds), is.numeric(thresholds))))
-  c <- abs(data)
   if (is.vector(data)) {
     if (all(is.na(thresholds))) {
       filtered_data <- data
-      binary_data <- matrix(F, length(data))
+      binary_data <- rep(F, length(data))
     } else {
       assertthat::assert_that(
         assertthat::are_equal(length(thresholds), 1)

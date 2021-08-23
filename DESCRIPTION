@@ -7,11 +7,11 @@ Authors@R:
            role = c("aut", "cre", "cph"),
            email = "val.courgeau@gmail.com",
            comment = c(ORCID = "0000-0002-7423-0090"))
-Description: It provides statistical inference tools for network time
-    series, including implementation of the Graph OU (GrOU) model and
-    sparse AR-like regression on irregularly-spaced data (Courgeau and
-    Veraart (2020) <arXiv:2005.12720>; Courgeau and Veraart
-    <arXiv:2008.10930>).  It also handles jumps and Lévy-type driving
+Description: Statistical inference tools for network time series,
+    including implementation of the Graph Ornstein-Uhlenbeck ('GrOU')
+    model and sparse AR-like regression on irregularly-spaced data
+    (Courgeau and Veraart (2020) <arXiv:2005.12720>; Courgeau and Veraart
+    <arXiv:2008.10930>). It also handles jumps and Levy-type driving
     noises through Wiener-Poisson mixtures and Generalised Hyperbolic
     distributions.
 License: MIT + file LICENSE
