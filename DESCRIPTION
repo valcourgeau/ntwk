@@ -19,16 +19,16 @@ Imports:
     assertthat (>= 0.2.1),
     copCAR,
     ghyp,
-    knitr,
     Matrix,
     mvtnorm,
-    numDeriv,
     pracma,
-    rmarkdown,
     stats,
     zoo
 Suggests: 
     igraph,
+    knitr,
+    numDeriv,
+    rmarkdown,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
