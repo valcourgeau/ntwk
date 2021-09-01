@@ -7,3 +7,4 @@
 dev
 /R/tmp/
 ^cran-comments\.md$
+^CRAN-RELEASE$
