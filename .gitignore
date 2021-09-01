@@ -27,9 +27,6 @@ vignettes/*.pdf
 # dev checklist
 dev/dev_history.R
 
-# CRAN comments
-cran-comments.md
-
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
 
@@ -44,3 +41,6 @@ cran-comments.md
 # R Environment Variables
 .Renviron
 .Rproj.user
+
+# Tmp R files
+/R/rmp/
