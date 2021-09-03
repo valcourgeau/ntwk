@@ -4,13 +4,13 @@
 \alias{fit_ghyp_diffusion}
 \title{Fit a Generalised Hyperbolic distribution.}
 \usage{
-fit_ghyp_diffusion(data, ghyp_names = "FULL", silent = T, ...)
+fit_ghyp_diffusion(data, ghyp_names = "FULL", silent = TRUE, ...)
 }
 \arguments{
 \item{data}{Data to fit.}
 
 \item{ghyp_names}{Ghyp distribution names
-(in \code{c('NIG', 'GAUSS', 'VG', 'T', 'FULL')}).}
+(in \code{c('NIG', 'GAUSS', 'VG', 'ST', 'FULL')}).}
 
 \item{silent}{Boolean to silence the noise inference.}
 

@@ -5,7 +5,7 @@
 \title{Normalise a square matrix by dividing elements by the sum of
 off-diagonal entries row-wise. Note: sets diagonal to zero.}
 \usage{
-row_normalised(adj, keep_values = F)
+row_normalised(adj, keep_values = FALSE)
 }
 \arguments{
 \item{adj}{Adjacency matrix to normalise}

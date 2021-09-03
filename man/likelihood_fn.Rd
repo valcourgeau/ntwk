@@ -12,9 +12,9 @@ likelihood_fn(
   reg = "l1",
   div = 1e+05,
   gamma = NA,
-  use_scaling = F,
+  use_scaling = FALSE,
   mle = NA,
-  log = T
+  log = TRUE
 )
 }
 \arguments{

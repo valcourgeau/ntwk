@@ -17,7 +17,7 @@ a mixture of \code{NA}s and numerical values
 }
 \value{
 List of filtered data vector or matrix (\verb{$data})
-and binary matrix of filtered times (\code{filter}) (\code{T} means filtered).
+and binary matrix of filtered times (\code{filter}) (\code{TRUE} means filtered).
 }
 \description{
 Filters the data above the thresholds (set to zero).

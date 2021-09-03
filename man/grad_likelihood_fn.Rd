@@ -9,8 +9,8 @@ grad_likelihood_fn(
   data,
   thresholds,
   div = 1e+05,
-  use_scaling = F,
-  log = T
+  use_scaling = FALSE,
+  log = TRUE
 )
 }
 \arguments{
