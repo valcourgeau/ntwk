@@ -75,7 +75,7 @@ levy_recovery <- function(adj, data, times, look_ahead = 1) {
 #' Fit a Generalised Hyperbolic distribution.
 #' @param data Data to fit.
 #' @param ghyp_names Ghyp distribution names
-#'     (in `c('NIG', 'GAUSS', 'VG', 'T', 'FULL')`).
+#'     (in `c('NIG', 'GAUSS', 'VG', 'ST', 'FULL')`).
 #' @param silent Boolean to silence the noise inference.
 #' @param ... Extra options given to the ghyp fitting.
 #' @note `ghyp` fitting is forced to be silent.
@@ -85,12 +85,12 @@ levy_recovery <- function(adj, data, times, look_ahead = 1) {
 #' data <- cbind(ghyp::rghyp(n, ghyp::ghyp()), ghyp::rghyp(n, ghyp::ghyp()))
 #' fit_ghyp_diffusion(data = data, silent = T)
 #' @export
-fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
+fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = TRUE, ...) {
   ghyp_model_list <- list(
     "NIG" = ghyp::fit.NIGmv,
     "GAUSS" = ghyp::fit.gaussmv,
     "VG" = ghyp::fit.VGmv,
-    "T" = ghyp::fit.tmv,
+    "ST" = ghyp::fit.tmv,
     "FULL" = ghyp::fit.ghypmv
   )
 
@@ -98,7 +98,7 @@ fit_ghyp_diffusion <- function(data, ghyp_names = "FULL", silent = T, ...) {
     all(
       vapply(
         ghyp_names, function(x) x %in% names(ghyp_model_list),
-        FUN.VALUE = T
+        FUN.VALUE = TRUE
       )
     )
   )

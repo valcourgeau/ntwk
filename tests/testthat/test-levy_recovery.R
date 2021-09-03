@@ -50,7 +50,7 @@ testthat::test_that("levy_recovery_sparse_adj", {
     diag(d),
     noise = noise, y_init = rep(0, d), delta_time = delta_time
   )
-  sparse_adj <- Matrix::Matrix(diag(d), sparse = T)
+  sparse_adj <- Matrix::Matrix(diag(d), sparse = TRUE)
   levy_recov <- levy_recovery(adj = sparse_adj, data = data, times = times)
   testthat::expect_equal(class(sparse_adj)[1], "ddiMatrix")
   testthat::expect_equal(
@@ -96,7 +96,7 @@ testthat::test_that("fit_ghyp_diffusion_output", {
     "NIG" = ghyp::fit.NIGmv,
     "GAUSS" = ghyp::fit.gaussmv,
     "VG" = ghyp::fit.VGmv,
-    "T" = ghyp::fit.tmv,
+    "ST" = ghyp::fit.tmv,
     "FULL" = ghyp::fit.ghypmv
   )
 
@@ -112,8 +112,8 @@ testthat::test_that("fit_ghyp_diffusion_output", {
       # pick n model families and fit
       fit_ghyp <- fit_ghyp_diffusion(
         noise,
-        ghyp_names = sample(ghyp_names, size = n_pick, replace = F),
-        silent = T
+        ghyp_names = sample(ghyp_names, size = n_pick, replace = FALSE),
+        silent = TRUE
       )
       testthat::expect_equal(length(fit_ghyp), n_pick)
     }
@@ -124,9 +124,9 @@ testthat::test_that("fit_ghyp_diffusion_wrong_name", {
   n <- 1000
   d <- 2
   data <- matrix(rnorm(n * d), ncol = d)
-  testthat::expect_error(fit_ghyp_diffusion(data, "Normal", silent = T))
+  testthat::expect_error(fit_ghyp_diffusion(data, "Normal", silent = TRUE))
   testthat::expect_error(
-    fit_ghyp_diffusion(data, c("NIG", "Normal"), silent = T)
+    fit_ghyp_diffusion(data, c("NIG", "Normal"), silent = TRUE)
   )
 })
 

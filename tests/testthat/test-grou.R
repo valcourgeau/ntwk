@@ -2,7 +2,7 @@ testthat::test_that("core_node_mle_kron_numerator_unif_times", {
   n <- 5
   d <- 5
   times <- seq_len(n)
-  data <- matrix(rep(seq_len(n), d), nrow = n, ncol = d, byrow = F)
+  data <- matrix(rep(seq_len(n), d), nrow = n, ncol = d, byrow = FALSE)
   cn_mle <- core_node_mle(times = times, data = data, thresholds = NA)
   perfect_denominator <- matrix(sum(seq_len(n - 1)), d, d)
   testthat::expect_equal(cn_mle$numerator, perfect_denominator)
@@ -144,7 +144,8 @@ testthat::test_that("grou_mle__random_graphs", {
   theta_2 <- 2.0
   diag(adj_test) <- 0
   adj_test <- theta_1 * adj_test
-  adj_test <- row_normalised(adj_test, keep_value = T) + theta_2 * diag(n_nodes)
+  adj_test <- row_normalised(adj_test, keep_value = TRUE)
+  adj_test <- adj_test + theta_2 * diag(n_nodes)
 
   mesh_size <- 0.01
   noise <- matrix(

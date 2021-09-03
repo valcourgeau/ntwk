@@ -21,12 +21,12 @@ test_that("likelihood_shapes", {
   loglik_val <- loglik(adj_test)
   testthat::expect_equal(length(loglik_val), 1)
 
-  loglik <- likelihood_fn(times, path, thresholds, log = F)
+  loglik <- likelihood_fn(times, path, thresholds, log = FALSE)
   loglik_val <- loglik(adj_test)
   testthat::expect_true(loglik_val < 0)
 
   # with scaling
-  loglik <- likelihood_fn(times, path, thresholds, use_scaling = T)
+  loglik <- likelihood_fn(times, path, thresholds, use_scaling = TRUE)
   loglik_val <- loglik(adj_test)
   testthat::expect_equal(length(loglik_val), 1)
 
@@ -70,10 +70,10 @@ test_that("grad_likelihood_shapes", {
   )
 
   # with scaling
-  loglik <- likelihood_fn(times, path, thresholds, use_scaling = T)
+  loglik <- likelihood_fn(times, path, thresholds, use_scaling = TRUE)
   grad_loglik_numerical_val <- numDeriv::grad(function(x) -loglik(x), adj_test)
 
-  grad_loglik <- grad_likelihood_fn(times, path, thresholds, use_scaling = T)
+  grad_loglik <- grad_likelihood_fn(times, path, thresholds, use_scaling = TRUE)
   grad_loglik_val <- grad_loglik(adj_test)
   testthat::expect_equal(
     as.vector(grad_loglik_val), as.vector(grad_loglik_numerical_val),

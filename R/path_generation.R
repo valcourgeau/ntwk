@@ -214,7 +214,7 @@ bm_compound_poisson_ghyp <- function(n, sigma, ghyp_distr,
   }
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time,
-    jump_values = jump_vals, synchronised = T
+    jump_values = jump_vals, synchronised = TRUE
   )
   cmpnd_poisson_noise <- cmpnd_poisson$noise
   corr_bm_noise <- correlated_brownian_noise(

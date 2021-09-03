@@ -33,7 +33,7 @@
 #' @export
 likelihood_fn <- function(times, data, thresholds, lambda = NA,
                           reg = "l1", div = 1e5, gamma = NA,
-                          use_scaling = F, mle = NA, log = T) {
+                          use_scaling = FALSE, mle = NA, log = TRUE) {
   # TODO(val) add warning for lambda
   # TODO(val) add scaling
   # TODO(val) add filtering on levy incrementss
@@ -118,7 +118,7 @@ likelihood_fn <- function(times, data, thresholds, lambda = NA,
 #' grad_loglik(diag(d))
 #' @export
 grad_likelihood_fn <- function(times, data, thresholds, div = 1e5,
-                               use_scaling = F, log = T) {
+                               use_scaling = FALSE, log = TRUE) {
   n_nodes <- ncol(data)
 
   if (use_scaling) {

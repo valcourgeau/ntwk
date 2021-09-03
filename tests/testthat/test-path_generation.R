@@ -115,7 +115,7 @@ test_that("compound_poisson_jumps__shape", {
   # synchro
   cmpnd_poisson <- compound_poisson_jumps(
     d = d, n = n, delta_time = delta_time, jump_values = jump_vals,
-    synchronised = T
+    synchronised = TRUE
   )
   testthat::expect_equal(dim(cmpnd_poisson$noise), c(n, d))
   testthat::expect_true(is.vector(cmpnd_poisson$jump_times))

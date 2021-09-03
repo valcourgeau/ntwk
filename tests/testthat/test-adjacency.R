@@ -101,7 +101,7 @@ testthat::test_that("Adjacency_fc_network__directed", {
   theta_1 <- 1.2
   theta_2 <- 2
   adj <- fully_connected_network(
-    d = d, theta_1 = theta_1, theta_2 = theta_2, directed = T
+    d = d, theta_1 = theta_1, theta_2 = theta_2, directed = TRUE
   )
   testthat::expect_equal(sum(adj[upper.tri(adj)]), d / 2 * theta_1)
   testthat::expect_equal(sum(adj[upper.tri(adj)]), -sum(adj[lower.tri(adj)]))

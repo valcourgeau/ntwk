@@ -10,7 +10,7 @@
 #' adj <- matrix(1, d, d)
 #' row_normalised(adj)
 #' @export
-row_normalised <- function(adj, keep_values = F) {
+row_normalised <- function(adj, keep_values = FALSE) {
   # zero on diag, row sum to 1 with positive weights
 
   diag(adj) <- 0.0
@@ -116,7 +116,7 @@ augmented_diag <- function(d, offset) {
 #'     a mixture of `NA`s and numerical values
 #'     (with length equal to `nrow(data)`).
 #' @return List of filtered data vector or matrix (`$data`)
-#'     and binary matrix of filtered times (`filter`) (`T` means filtered).
+#'     and binary matrix of filtered times (`filter`) (`TRUE` means filtered).
 #' @importFrom stats rnorm
 #' @examples
 #' n <- 10000
@@ -138,13 +138,13 @@ data_filtering <- function(data, thresholds = NA) {
   if (is.vector(data)) {
     if (all(is.na(thresholds))) {
       filtered_data <- data
-      binary_data <- rep(F, length(data))
+      binary_data <- rep(FALSE, length(data))
     } else {
       assertthat::assert_that(
         assertthat::are_equal(length(thresholds), 1)
       )
       binary_data <- abs(data) > thresholds
-      binary_data[is.na(binary_data)] <- F
+      binary_data[is.na(binary_data)] <- FALSE
       filtered_data <- data * !binary_data
     }
   } else {
@@ -154,7 +154,7 @@ data_filtering <- function(data, thresholds = NA) {
         assertthat::are_equal(length(thresholds), ncol(data))
       )
       binary_data <- t(apply(abs(data), 1, ">", thresholds))
-      binary_data[is.na(binary_data)] <- F
+      binary_data[is.na(binary_data)] <- FALSE
       filtered_data <- data * !binary_data
     } else {
       stop("`data` should be a matrix or a vector.")

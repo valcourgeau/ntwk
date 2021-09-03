@@ -8,11 +8,11 @@ testthat::test_that("get_reg_fn__type", {
   adj_test[3, 1] <- 0.1
 
   reg_fn <- get_reg_fn("l1")
-  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = FALSE)
   testthat::expect_equal(reg_fn(x), sum(abs(x)))
 
   reg_fn <- get_reg_fn("l2")
-  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = FALSE)
   testthat::expect_equal(reg_fn(x), sqrt(sum(x^2)))
 
   beta_value <- 0.4999
@@ -31,7 +31,7 @@ testthat::test_that("get_reg_fn__type", {
   )
 
   reg_fn <- get_reg_fn("adaptive", mle = grou_mle_fit, gamma = 1)
-  x <- sample(seq(-100, 100, by = 1), size = 30, replace = F)
+  x <- sample(seq(-100, 100, by = 1), size = 30, replace = FALSE)
   testthat::expect_equal(
     reg_fn(grou_mle_fit),
     sum(abs(rep(1, length(grou_mle_fit))))
@@ -102,7 +102,7 @@ testthat::test_that("grou_regularisation__shape", {
     lambda = 10,
     reg = "l1",
     output = "matrix",
-    gamma = 3, use_scaling = T, cut_off = .65
+    gamma = 3, use_scaling = TRUE, cut_off = .65
   )
   testthat::expect_equal(dim(reg_adj), c(d, d))
 
@@ -138,14 +138,14 @@ testthat::test_that("grou_regularisation__errors", {
 
   testthat::expect_error(grou_regularisation(
     times = times, data = path, thresholds = NA, lambda = 10, reg = "l1",
-    output = "qwe", gamma = 3, use_scaling = T, cut_off = .65
+    output = "qwe", gamma = 3, use_scaling = TRUE, cut_off = .65
   ), regexp = "output")
   testthat::expect_error(grou_regularisation(
     times = times, data = path, thresholds = NA, lambda = -1, reg = "l1",
-    output = "matrix", gamma = 3, use_scaling = T, cut_off = .65
+    output = "matrix", gamma = 3, use_scaling = TRUE, cut_off = .65
   ), regexp = "lambda")
   testthat::expect_error(grou_regularisation(
     times = times, data = path, thresholds = NA, lambda = 10, reg = "l1",
-    output = "cut_off", gamma = 3, use_scaling = T, cut_off = -1
+    output = "cut_off", gamma = 3, use_scaling = TRUE, cut_off = -1
   ))
 })

@@ -11,7 +11,7 @@ test_that("utils_row_normalised__shape", {
 test_that("utils_row_normalised__zero_diag", {
   d <- 10
   adj <- diag(5, d, d)
-  row_adj <- row_normalised(adj, keep_values = F)
+  row_adj <- row_normalised(adj, keep_values = FALSE)
   testthat::expect_equal(sum(abs(diag(row_adj))), 0.0)
 })
 
@@ -33,7 +33,7 @@ test_that("utils_row_normalised__keep_value", {
     adj <- matrix(1, d, d)
     diag(adj) <- 0
     adj <- theta_1 * adj + theta_2 * diag(d)
-    row_adj <- row_normalised(adj, keep_value = T)
+    row_adj <- row_normalised(adj, keep_value = TRUE)
     testthat::expect_equal(sum(abs(diag(row_adj))), 0)
     testthat::expect_equal(
       apply(row_adj, 1, function(x) sum(x)),
@@ -45,7 +45,7 @@ test_that("utils_row_normalised__keep_value", {
     adj <- matrix(1, d, d)
     diag(adj) <- 0
     adj <- theta_1 * adj + theta_2 * diag(d)
-    row_adj <- row_normalised(adj, keep_value = F)
+    row_adj <- row_normalised(adj, keep_value = FALSE)
     testthat::expect_equal(sum(abs(diag(row_adj))), 0)
     testthat::expect_equal(
       apply(row_adj, 1, function(x) sum(x)),
