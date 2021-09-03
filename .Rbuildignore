@@ -5,6 +5,8 @@
 ^README\.Rmd$
 ^LICENSE\.md
 dev
-/R/tmp/
+/R/tmp
 ^cran-comments\.md$
 ^CRAN-RELEASE$
+^R/tmp$
+^R/tests$
